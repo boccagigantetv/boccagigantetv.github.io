@@ -17,6 +17,26 @@ body {
   background-color: #222222;
   color: white;
 }
+      .cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    text-align: center;
+    z-index: 9999;
+}
+
+.cookie-button {
+    background-color: #ff9900;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
 </style>
   </head>
   <body>
@@ -51,6 +71,11 @@ body {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
 
 <button style="background:#3630a3;color:white;" onclick="myFunction()">Dark/Light</button>
+    
+<div id="cookie-banner" class="cookie-banner">
+    <p>Questo sito utilizza i cookie per migliorare l'esperienza di navigazione. Continuando a navigare, accetti l'uso dei cookie.</p>
+    <button id="accept-cookies" class="cookie-button">Accetta</button>
+</div>
 
 <script>
 function myFunction() {
