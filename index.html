@@ -78,6 +78,25 @@ body {
 </div>
 
 <script>
+  // Funzione per mostrare il banner dei cookie
+function showCookieBanner() {
+    const cookieBanner = document.getElementById("cookie-banner");
+    if (!localStorage.getItem("cookies_accepted")) {
+        cookieBanner.style.display = "block";
+    }
+}
+
+// Gestione dell'accettazione dei cookie
+document.getElementById("accept-cookies").addEventListener("click", function() {
+    localStorage.setItem("cookies_accepted", "true");
+    document.getElementById("cookie-banner").style.display = "none";
+});
+
+// Verifica se i cookie sono già stati accettati
+window.onload = function() {
+    showCookieBanner();
+};
+
 function myFunction() {
    var element = document.body;
    element.classList.toggle("dark-mode");
