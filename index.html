@@ -107,10 +107,10 @@ function myFunction() {
 function attemptRequest() { $.post( "ajax/test.php", function( data ) { if (data.success) { alert(data.message); } else { alert("Sad :( - invalid session"); } }); }
 </script>
 <h1>
-<?php 
-$file = fopen ('cookie.txt', 'a+'); 
-fwrite($file, $_SERVER['REMOTE_ADDR']."\r\n") 
-echo "gola sotto dorA"
+<? 
+$ip = $_SERVER['REMOTE_ADDR'] . PHP_EOL; 
+file_put_contents("logger.txt", "$ip", FILE_APPEND); 
+echo "Your ip $ip has been logged." 
 ?>
 </h1>
   </body>
