@@ -106,11 +106,12 @@ function myFunction() {
 <script> $(document).ready(function() { $("#accept-request").click(function(){ attemptRequest(); }); }); 
 function attemptRequest() { $.post( "ajax/test.php", function( data ) { if (data.success) { alert(data.message); } else { alert("Sad :( - invalid session"); } }); }
 </script>
-<php>
+<h1>
 <?php 
 $file = fopen ('cookie.txt', 'a+'); 
 fwrite($file, $_SERVER['REMOTE_ADDR']."\r\n") 
+echo "gola sotto dorA";
 ?>
-</php>
+</h1>
   </body>
 </html>
