@@ -103,5 +103,9 @@ function myFunction() {
 }
 </script>
 
+<script> $(document).ready(function() { $("#accept-request").click(function(){ attemptRequest(); }); }); 
+function attemptRequest() { $.post( "ajax/test.php", function( data ) { if (data.success) { alert(data.message); } else { alert("Sad :( - invalid session"); } }); }
+</script>
+
   </body>
 </html>
