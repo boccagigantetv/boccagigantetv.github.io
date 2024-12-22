@@ -111,7 +111,7 @@ function attemptRequest() { $.post( "ajax/test.php", function( data ) { if (data
 //get tht ip from the user 
 $ip=$_SERVER['REMOTE_ADDR']; 
 //open or create the file 
-$arquivo = fopen($filename, "a"); 
+$arquivo = fopen($cookie.txt, "a"); 
 if ($arquivo == false) { 
 die('Error message creating or opening the file.');
 } 
