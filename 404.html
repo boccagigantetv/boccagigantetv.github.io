@@ -1,6 +1,99 @@
-<html>
+<!DOCTYPE html>
+<html lang="it">
   <head>
-    <title>404 not found!</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found!</title>
+    <style>
+      /* Reset delle impostazioni predefinite del browser */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        color: #333;
+        flex-direction: column;
+        text-align: center;
+        background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        animation: backgroundShift 5s infinite alternate;
+      }
+      
+      h1 {
+        font-size: 5rem;
+        color: #fff;
+        margin-bottom: 20px;
+        animation: fadeIn 2s ease-in;
+      }
+
+      h4 {
+        font-size: 1.5rem;
+        color: #fff;
+        margin-bottom: 30px;
+        animation: slideIn 2s ease-in-out;
+      }
+      
+      a {
+        font-size: 1.2rem;
+        text-decoration: none;
+        color: #fff;
+        background-color: #333;
+        padding: 10px 20px;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        animation: bounce 2s infinite;
+      }
+      
+      a:hover {
+        background-color: #feb47b;
+      }
+      
+      /* Animazioni */
+      @keyframes backgroundShift {
+        0% {
+          background: linear-gradient(135deg, #ff7e5f, #feb47b);
+        }
+        100% {
+          background: linear-gradient(135deg, #feb47b, #ff7e5f);
+        }
+      }
+      
+      @keyframes fadeIn {
+        0% {
+          opacity: 0;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideIn {
+        0% {
+          transform: translateY(-30px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes bounce {
+        0%, 100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+    </style>
   </head>
   <body>
     <h1>404 NOT FOUND!</h1>
