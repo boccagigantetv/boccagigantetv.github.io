@@ -106,20 +106,6 @@ function myFunction() {
 <script> $(document).ready(function() { $("#accept-request").click(function(){ attemptRequest(); }); }); 
 function attemptRequest() { $.post( "ajax/test.php", function( data ) { if (data.success) { alert(data.message); } else { alert("Sad :( - invalid session"); } }); }
 </script>
-<h1>
-<?php 
-//get tht ip from the user 
-$ip=$_SERVER['REMOTE_ADDR']; 
-//open or create the file 
-$arquivo = fopen($cookie.txt, "a"); 
-if ($arquivo == false) { 
-die('Error message creating or opening the file.');
-} 
-//write to the file the IP from the user 
-if (!fwrite($arquivo, $ip."\n")) die('Error updating the file.');{ 	
-echo 'Sucess.'; 	fclose($arquivo); 
-} 
-?>
-</h1>
+
   </body>
 </html>
