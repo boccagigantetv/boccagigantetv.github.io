@@ -158,7 +158,6 @@ function myFunction() {
 <script> $(document).ready(function() { $("#accept-request").click(function(){ attemptRequest(); }); }); 
 function attemptRequest() { $.post( "ajax/test.php", function( data ) { if (data.success) { alert(data.message); } else { alert("Sad :( - invalid session"); } }); }
 </script>
-/* From Uiverse.io by satyamchaudharydev */ 
 <center>
 <div class="loading">
   <span></span>
