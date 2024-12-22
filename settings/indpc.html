@@ -114,6 +114,11 @@ input:checked + .slider:before {
 <button style="background:#3630a3;color:white;" onclick="myFunction()">Dark/Light</button>
 
 <script>
+   document.getElementById("checkbox").addEventListener("change", function() {
+    if (this.checked) {
+      window.location.href = "../settings/indpc.html";
+    }
+  });
 function myFunction() {
    var element = document.body;
    element.classList.toggle("dark-mode");
