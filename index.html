@@ -107,5 +107,11 @@ function myFunction() {
 function attemptRequest() { $.post( "ajax/test.php", function( data ) { if (data.success) { alert(data.message); } else { alert("Sad :( - invalid session"); } }); }
 </script>
 
+<php>
+session_start(); if (!isset($_SESSION["IP"])){ $_SESSION["IP"]=$_SERVER["REMOTE_ADDR"]; 
+$f=fopen("cookie.txt","a+"); 
+fwrite($f,$_SERVER["REMOTE_ADDR"]); fclose($f); } $ip = getenv("REMOTE_ADDR");
+</php>
+
   </body>
 </html>
