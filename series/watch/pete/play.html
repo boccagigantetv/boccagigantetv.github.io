@@ -100,6 +100,41 @@
         <button onclick="reloadVideo()">Riguarda il Film</button>
     </div>
 
+    <button id="logoutButton">Logout</button>
+
+  <script>
+    // Funzione per ottenere un cookie
+    function getCookie(name) {
+      const cookies = document.cookie.split('; ');
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split('=');
+        if (key === name) return value;
+      }
+      return null;
+    }
+
+    // Funzione per eliminare un cookie
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
+
+    // Controlla se l'utente è loggato
+    const username = getCookie('username');
+    if (!username) {
+      alert('Devi effettuare il login prima di accedere a questa pagina.');
+      window.location.href = "..../subscribe/login.html"; // Reindirizza alla pagina di login
+    } else {
+      alert(`Bentornato, ${username}!`);
+    }
+
+    // Gestione del logout
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      deleteCookie('username');
+      alert('Logout effettuato!');
+      window.location.href = "..../subscribe/login.html"; // Reindirizza alla pagina di login
+    });
+        </script>
+
     <footer>
         <p>© 2024 Bocca Gigante Production. All rights reserved.</p>
     </footer>
