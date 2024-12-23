@@ -4,83 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #141414;
-            color: #fff;
-            text-align: center;
-        }
-
-        header {
-            background-color: #000;
-            padding: 20px;
-        }
-
-        header h1 {
-            font-size: 28px;
-            color: #e50914;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-
-        .youtube-player {
-            width: 100%;
-            max-width: 800px;
-            height: 450px;
-            border: 3px solid #e50914;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .description {
-            margin: 20px 0;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: #e50914;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        button:hover {
-            transform: scale(1.1);
-        }
-
-        footer {
-            background-color: #000;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        footer p {
-            font-size: 14px;
-        }
-    </style>
 </head>
 <body>
   <h1>Dashboard</h1>
-  <p>Benvenuto nella tua area riservata!</p>
+  <p>Welcome to your personalized dashboard!</p>
+
+  <h2>Your Favorites</h2>
+  <ul id="favoritesList"></ul>
+
+  <form id="addFavoriteForm">
+    <input type="text" id="newFavorite" placeholder="Add a favorite" required>
+    <button type="submit">Add</button>
+  </form>
+
   <button id="logoutButton">Logout</button>
 
   <script>
-    // Funzione per ottenere un cookie
+    // Utility functions
     function getCookie(name) {
       const cookies = document.cookie.split('; ');
       for (let cookie of cookies) {
@@ -90,25 +30,74 @@
       return null;
     }
 
-    // Funzione per eliminare un cookie
     function deleteCookie(name) {
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     }
 
-    // Controlla se l'utente è loggato
+    // Check if user is logged in
     const username = getCookie('username');
     if (!username) {
-      alert('Devi effettuare il login prima di accedere a questa pagina.');
-      window.location.href = "login.html"; // Reindirizza alla pagina di login
-    } else {
-      alert(`Bentornato, ${username}!`);
+      alert('You must log in to access this page.');
+      window.location.href = "login.html";
     }
 
-    // Gestione del logout
-    document.getElementById('logoutButton').addEventListener('click', function() {
+    // Fetch and display user favorites
+    async function loadFavorites() {
+      try {
+        const response = await fetch('favorites.json');
+        const favoritesData = await response.json();
+
+        const userFavorites = favoritesData[username] || [];
+        const favoritesList = document.getElementById('favoritesList');
+        favoritesList.innerHTML = '';
+
+        userFavorites.forEach(favorite => {
+          const li = document.createElement('li');
+          li.textContent = favorite;
+          favoritesList.appendChild(li);
+        });
+      } catch (error) {
+        console.error('Error loading favorites:', error);
+        alert('Could not load favorites. Please try again later.');
+      }
+    }
+
+    // Add a new favorite
+    document.getElementById('addFavoriteForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const newFavorite = document.getElementById('newFavorite').value;
+
+      try {
+        // Fetch existing favorites
+        const response = await fetch('favorites.json');
+        const favoritesData = await response.json();
+
+        // Update favorites for the current user
+        if (!favoritesData[username]) {
+          favoritesData[username] = [];
+        }
+        favoritesData[username].push(newFavorite);
+
+        // Simulate saving to the server (log the result to console)
+        console.log('Updated favorites data:', favoritesData);
+
+        alert('Favorite added!');
+        document.getElementById('newFavorite').value = '';
+        loadFavorites();
+      } catch (error) {
+        console.error('Error adding favorite:', error);
+        alert('Could not add favorite. Please try again later.');
+      }
+    });
+
+    // Load favorites on page load
+    loadFavorites();
+
+    // Handle logout
+    document.getElementById('logoutButton').addEventListener('click', function () {
       deleteCookie('username');
-      alert('Logout effettuato!');
-      window.location.href = "login.html"; // Reindirizza alla pagina di login
+      alert('Logged out successfully!');
+      window.location.href = "login.html";
     });
   </script>
 </body>
