@@ -97,16 +97,16 @@
     // Check if user is logged in
     const username = getCookie('username');
     if (!username) {
-      alert('You must log in to access this page.');
+      alert('Devi accedere per visualizzare questa pagina.');
       window.location.href = "login.html";
     } else {
-      alert(`Welcome back, ${username}!`);
+      alert(`Bentornato, ${username}!`);
     }
 
     // Handle logout
     document.getElementById('logoutButton').addEventListener('click', function () {
       deleteCookie('username');
-      alert('Logged out successfully!');
+      alert('Uscito dall'account con successo!');
       window.location.href = "login.html";
     });
   </script>
