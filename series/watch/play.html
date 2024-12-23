@@ -15,7 +15,6 @@
             font-family: Arial, sans-serif;
             background-color: #141414;
             color: #fff;
-            line-height: 1.6;
             text-align: center;
         }
 
@@ -33,12 +32,12 @@
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
-            text-align: center;
         }
 
-        video {
+        .youtube-player {
             width: 100%;
             max-width: 800px;
+            height: 450px;
             border: 3px solid #e50914;
             border-radius: 10px;
             margin-bottom: 20px;
@@ -81,20 +80,24 @@
     </header>
 
     <div class="container">
-        <video id="moviePlayer" controls>
-            <source src="movie.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+        <!-- YouTube Player -->
+        <iframe 
+            class="youtube-player" 
+            src="https://www.youtube.com/embed/VIDEO_ID" 
+            title="YouTube video player" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
 
         <div class="description">
             <h2>Movie Title</h2>
             <p>
-                A brief description of the movie goes here. 
-                Enjoy the show!
+                A brief description of the movie goes here. Enjoy watching directly from YouTube!
             </p>
         </div>
 
-        <button onclick="restartMovie()">Restart Movie</button>
+        <button onclick="reloadVideo()">Restart Movie</button>
     </div>
 
     <footer>
@@ -102,10 +105,11 @@
     </footer>
 
     <script>
-        function restartMovie() {
-            const moviePlayer = document.getElementById('moviePlayer');
-            moviePlayer.currentTime = 0;
-            moviePlayer.play();
+        function reloadVideo() {
+            const player = document.querySelector('.youtube-player');
+            const src = player.src;
+            player.src = ''; // Temporarily clear the source
+            player.src = src; // Reload the original source
         }
     </script>
 </body>
