@@ -69,35 +69,36 @@
     </div>
 
     <script>
-        document.getElementById('loginButton').addEventListener('click', async () => {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
+document.getElementById('loginButton').addEventListener('click', async () => {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const errorMessage = document.getElementById('errorMessage');
 
-            if (!username || !password) {
-                errorMessage.textContent = 'Please enter both username and password.';
-                return;
-            }
+    if (!username || !password) {
+        errorMessage.textContent = 'Please enter both username and password.';
+        return;
+    }
 
-            try {
-                // Fetch user data from the JSON file
-                const response = await fetch('users.json');
-                const users = await response.json();
+    try {
+        // Simulazione di una connessione HTTPS sicura
+        const response = await fetch('users.json'); // Assicurati che HTTPS sia configurato
+        const users = await response.json();
 
-                // Check credentials
-                const validUser = users.some(user => user.username === username && user.password === password);
+        // Confronto delle credenziali
+        const validUser = users.some(user => user.username === username && user.password === password);
 
-                if (validUser) {
-                    alert('Login successful!');
-                    window.location.href = 'index.html'; // Redirect to the home page
-                } else {
-                    errorMessage.textContent = 'Invalid username or password.';
-                }
-            } catch (error) {
-                console.error('Error fetching users:', error);
-                errorMessage.textContent = 'An error occurred. Please try again later.';
-            }
-        });
+        if (validUser) {
+            alert('Login successful!');
+            window.location.href = 'home.html';
+        } else {
+            errorMessage.textContent = 'Invalid username or password.';
+        }
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        errorMessage.textContent = 'An error occurred. Please try again later.';
+    }
+});
+
     </script>
 </body>
 </html>
