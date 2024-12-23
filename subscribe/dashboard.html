@@ -77,16 +77,6 @@
 <body>
   <h1>Dashboard</h1>
   <p>Welcome to your dashboard!</p>
-  <form id="changePasswordForm">
-    <h3>Change Password</h3>
-    <label for="currentPassword">Current Password:</label>
-    <input type="password" id="currentPassword" required>
-    <br>
-    <label for="newPassword">New Password:</label>
-    <input type="password" id="newPassword" required>
-    <br>
-    <button type="submit">Change Password</button>
-  </form>
   <button id="logoutButton">Logout</button>
 
   <script>
@@ -112,40 +102,6 @@
     } else {
       alert(`Welcome back, ${username}!`);
     }
-
-    // Handle password change
-    document.getElementById('changePasswordForm').addEventListener('submit', async function (event) {
-      event.preventDefault();
-      const currentPassword = document.getElementById('currentPassword').value;
-      const newPassword = document.getElementById('newPassword').value;
-
-      try {
-        // Load users.json
-        const response = await fetch('users.json');
-        const users = await response.json();
-
-        // Find the user and verify the current password
-        const user = users.find(user => user.username === username && user.password === currentPassword);
-
-        if (user) {
-          // Simulate updating the password (server-side in a real app)
-          user.password = newPassword;
-
-          alert('Password changed successfully!');
-          // In a real app, send this update to the server
-          console.log('Updated user data:', users);
-
-          // Clear form fields
-          document.getElementById('currentPassword').value = '';
-          document.getElementById('newPassword').value = '';
-        } else {
-          alert('Current password is incorrect.');
-        }
-      } catch (error) {
-        console.error('Error loading users:', error);
-        alert('Error changing password. Please try again later.');
-      }
-    });
 
     // Handle logout
     document.getElementById('logoutButton').addEventListener('click', function () {
