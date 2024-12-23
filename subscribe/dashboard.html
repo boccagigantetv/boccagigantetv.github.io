@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+</head>
+<body>
+  <h1>Dashboard</h1>
+  <p>Benvenuto nella tua area riservata!</p>
+  <button id="logoutButton">Logout</button>
+
+  <script>
+    // Funzione per ottenere un cookie
+    function getCookie(name) {
+      const cookies = document.cookie.split('; ');
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split('=');
+        if (key === name) return value;
+      }
+      return null;
+    }
+
+    // Funzione per eliminare un cookie
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
+
+    // Controlla se l'utente è loggato
+    const username = getCookie('username');
+    if (!username) {
+      alert('Devi effettuare il login prima di accedere a questa pagina.');
+      window.location.href = "login.html"; // Reindirizza alla pagina di login
+    } else {
+      alert(`Bentornato, ${username}!`);
+    }
+
+    // Gestione del logout
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      deleteCookie('username');
+      alert('Logout effettuato!');
+      window.location.href = "login.html"; // Reindirizza alla pagina di login
+    });
+  </script>
+</body>
+</html>
