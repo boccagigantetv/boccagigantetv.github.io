@@ -73,6 +73,23 @@
             font-size: 14px;
         }
     </style>
+    <script>
+    async function checkAccess() {
+      try {
+        const response = await fetch('/check-ip');
+        const data = await response.json();
+
+        if (!data.allowed) {
+          window.location.href = "..../subscribe";
+        }
+      } catch (error) {
+        console.error("Errore durante la verifica dell'accesso:", error);
+      }
+    }
+
+    // Controlla l'accesso quando la pagina viene caricata
+    window.onload = checkAccess;
+    </script>
 </head>
 <body>
     <header>
