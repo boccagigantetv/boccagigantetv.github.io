@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BG-TV</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #141414;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: #000;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.7);
+        }
+
+        header h1 {
+            font-size: 24px;
+            color: #e50914;
+        }
+
+        header nav a {
+            margin: 0 10px;
+            color: #fff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        header nav a:hover {
+            color: #e50914;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .search-bar input {
+            padding: 10px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+            width: 200px;
+            transition: width 0.4s;
+        }
+
+        .search-bar input:focus {
+            width: 300px;
+        }
+
+        .search-bar button {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #e50914;
+            cursor: pointer;
+        }
+
+        .hero {
+            height: 80vh;
+            background: url('https://boccagigantetv.github.io/image/place1.png') center/cover no-repeat;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.8));
+        }
+
+        .hero h2 {
+            font-size: 48px;
+            margin-bottom: 20px;
+            z-index: 1;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            z-index: 1;
+        }
+
+        .hero button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #e50914;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 1;
+            transition: transform 0.2s;
+        }
+
+        .hero button:hover {
+            transform: scale(1.1);
+        }
+
+        .section {
+            padding: 20px;
+        }
+
+        .section h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .row {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+            scroll-behavior: smooth;
+        }
+
+        .row .poster {
+            position: relative;
+            margin-right: 10px;
+            transition: transform 0.3s;
+            border-radius: 5px;
+        }
+
+        .row .poster img {
+            width: 200px;
+            height: 300px;
+            border-radius: 5px;
+            display: block;
+        }
+
+        .row .poster .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+            border-radius: 5px;
+        }
+
+        .row .poster .overlay button {
+            margin: 0 5px;
+            padding: 8px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #e50914;
+            color: #fff;
+        }
+
+        .row .poster:hover {
+            transform: scale(1.1);
+        }
+
+        .row .poster:hover .overlay {
+            opacity: 1;
+        }
+
+        .section .row::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .section .row::-webkit-scrollbar-thumb {
+            background: #e50914;
+            border-radius: 4px;
+        }
+
+        footer {
+            background-color: #000;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .category {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>BG-TV</h1>
+        <nav>
+            <a href="./">Home</a>
+            <a href="./series/">Serie TV</a>
+            <a href="./series/watch">Film</a>
+        </nav>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Cerca...">
+            <button onclick="performSearch()">🔍</button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <h2>Film, Serie TV, Clips: Illimitati.</h2>
+        <p>Guarda Ovunque, Cancella Senza Costi.</p>
+        <a href="https://boccagigantetv.github.io/subscribe"><button>Guarda Ora</button></a><button>Guarda Ora</button></a>
+    </section>
+    <div class="Categorie">
+    <section class="section">
+        <div class="category">
+            <h2>Serie TV</h2>
+            <div class="row">
+                <div class="poster">
+                    <img src="https://boccagigantetv.github.io/image/place2.jpg" alt="Trending Movie 1">
+                    <div class="overlay">
+                        <button>Aggiungi Ai Preferiti</button>
+                        <button>Guarda Ora</button>
+                    </div>
+                </div>
+                <div class="poster">
+                    <img src="https://via.placeholder.com/200x300" alt="Trending Movie 2">
+                    <div class="overlay">
+                        <button>Aggiungi Ai Preferiti</button>
+                        <button>Guarda Ora</button>
+                    </div>
+                </div>
+                <div class="poster">
+                    <img src="https://via.placeholder.com/200x300" alt="Trending Movie 3">
+                    <div class="overlay">
+                        <button>Aggiungi Ai Preferiti</button>
+                        <button>Guarda Ora</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <section class="section">
+        <div class="category">
+            <h2>Film</h2>
+            <div class="row">
+                <div class="poster">
+                    <img src="https://via.placeholder.com/200x300" alt="Trending Movie 1">
+                    <div class="overlay">
+                        <button>Aggiungi Ai Preferiti</button>
+                        <button>Guarda Ora</button>
+                    </div>
+                </div>
+                <div class="poster">
+                    <img src="https://via.placeholder.com/200x300" alt="Trending Movie 2">
+                    <div class="overlay">
+                        <button>Aggiungi Ai Preferiti</button>
+                        <button>Guarda Ora</button>
+                    </div>
+                </div>
+                <div class="poster">
+                    <img src="https://via.placeholder.com/200x300" alt="Trending Movie 3">
+                    <div class="overlay">
+                        <button>Aggiungi Ai Preferiti</button>
+                        <button>Guarda Ora</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    <section class="section">
+        <div class="category">
+            <h2>Trending</h2>
+            <div class="row">
+                <div class="poster">
+                    <img src="https://boccagigantetv.github.io/image/place2.jpg" alt="Trending Movie 1">
+                    <div class="overlay">
+                        <button>Aggiungi Ai Preferiti</button>
+                        <a href="https://boccagigantetv.github.io/series/watch/pete/"><button>Guarda Ora</button></a>
+                    </div>
+                </div>
+                <div class="poster">
+                    <img src="https://boccagigantetv.github.io/image/place3.png" alt="Trending Movie 2">
+                    <div class="overlay">
+                        <button>Aggiungi Ai Preferiti</button>
+                        <a href="https://boccagigantetv.github.io/series/watch/pete/"><button>Guarda Ora</button></a>
+                    </div>
+                </div>
+                <div class="poster">
+                    <img src="https://via.placeholder.com/200x300" alt="Trending Movie 3">
+                    <div class="overlay">
+                        <button>Aggiungi Ai Preferiti</button>
+                        <button>Guarda Ora</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="category">
+            <h2>Top 3 in Italia</h2>
+            <div class="row">
+                <div class="poster">
+                    <img src="https://boccagigantetv.github.io/image/place2.jpg" alt="Top Movie 1">
+                    <div class="overlay">
+                        <button>Aggiungi Ai Preferiti</button>
+                        <button>Guarda Ora</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+    <script>
+        function performSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            alert(`Searching for: ${query}`);
+        }
+    </script>
+
+</body>
+</html>
