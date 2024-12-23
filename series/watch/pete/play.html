@@ -122,7 +122,7 @@
     const username = getCookie('username');
     if (!username) {
       alert('Devi effettuare il login prima di accedere a questa pagina.');
-      window.location.href = "../../../subscribe/login.html"; // Reindirizza alla pagina di login
+      window.location.href = "https://boccagigantetv.github.io/subscribe/login.html"; // Reindirizza alla pagina di login
     } else {
       alert(`Bentornato, ${username}!`);
     }
@@ -131,7 +131,7 @@
     document.getElementById('logoutButton').addEventListener('click', function() {
       deleteCookie('username');
       alert('Logout effettuato!');
-      window.location.href = "../../../subscribe/login.html"; // Reindirizza alla pagina di login
+      window.location.href = "https://boccagigantetv.github.io/subscribe/login.html"; // Reindirizza alla pagina di login
     });
         </script>
 
