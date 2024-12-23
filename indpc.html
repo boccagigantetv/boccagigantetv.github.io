@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Mode</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #141414;
+            color: #fff;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        h1 {
+            font-size: 32px;
+            color: #ff9800;
+        }
+
+        .input-code {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            width: 200px;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff9800;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+        }
+
+        .kids-content {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .kids-content img {
+            width: 200px;
+            height: 300px;
+            border-radius: 10px;
+        }
+
+        .exit-code-container {
+            margin-top: 20px;
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 10px 0;
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Enter Kids Mode</h1>
+        <input type="password" id="entryCode" class="input-code" placeholder="Enter Code">
+        <button class="btn" onclick="enterKidsMode()">Enter</button>
+    </div>
+
+    <div class="kids-content">
+        <h1>Welcome to Kids Mode</h1>
+        <div class="movies">
+            <img src="https://via.placeholder.com/200x300?text=Movie+1" alt="Movie 1">
+            <img src="https://via.placeholder.com/200x300?text=Movie+2" alt="Movie 2">
+            <img src="https://via.placeholder.com/200x300?text=Movie+3" alt="Movie 3">
+        </div>
+        <div class="exit-code-container">
+            <input type="password" id="exitCode" class="input-code" placeholder="Enter Exit Code">
+            <button class="btn" onclick="exitKidsMode()">Exit</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2024 MyFlix. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const correctEntryCode = "1234"; // Codice per entrare
+        const correctExitCode = "5678"; // Codice per uscire
+
+        const container = document.querySelector('.container');
+        const kidsContent = document.querySelector('.kids-content');
+
+        // Mostra il form iniziale per il codice
+        window.onload = () => {
+            container.style.display = 'flex';
+        };
+
+        // Funzione per entrare nella modalità Kids
+        function enterKidsMode() {
+            const entryCode = document.getElementById('entryCode').value;
+            if (entryCode === correctEntryCode) {
+                container.style.display = 'none';
+                kidsContent.style.display = 'flex';
+            } else {
+                alert("Incorrect Code. Try Again!");
+            }
+        }
+
+        // Funzione per uscire dalla modalità Kids
+        function exitKidsMode() {
+            const exitCode = document.getElementById('exitCode').value;
+            if (exitCode === correctExitCode) {
+                kidsContent.style.display = 'none';
+                container.style.display = 'flex';
+            } else {
+                alert("Incorrect Exit Code. Try Again!");
+            }
+        }
+    </script>
+</body>
+</html>
