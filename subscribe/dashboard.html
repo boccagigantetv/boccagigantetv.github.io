@@ -1,115 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-  <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #141414;
-            color: #fff;
-            text-align: center;
-        }
-
-        header {
-            background-color: #000;
-            padding: 20px;
-        }
-
-        header h1 {
-            font-size: 28px;
-            color: #e50914;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-
-        .youtube-player {
-            width: 100%;
-            max-width: 800px;
-            height: 450px;
-            border: 3px solid #e50914;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .description {
-            margin: 20px 0;
-            font-size: 16px;
-        }
-
-        button {
-            background-color: #e50914;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        button:hover {
-            transform: scale(1.1);
-        }
-
-        footer {
-            background-color: #000;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        footer p {
-            font-size: 14px;
-        }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
 </head>
 <body>
-  <h1>Dashboard</h1>
-  <p>Benvenuto nella tua area riservata!</p>
-  <button id="logoutButton">Logout</button>
+  <h1>Dashboard</h1>
+  <p>Welcome to your dashboard!</p>
+  <form id="changePasswordForm">
+    <h3>Change Password</h3>
+    <label for="currentPassword">Current Password:</label>
+    <input type="password" id="currentPassword" required>
+    <br>
+    <label for="newPassword">New Password:</label>
+    <input type="password" id="newPassword" required>
+    <br>
+    <button type="submit">Change Password</button>
+  </form>
+  <button id="logoutButton">Logout</button>
 
-  <script>
-    // Funzione per ottenere un cookie
-    function getCookie(name) {
-      const cookies = document.cookie.split('; ');
-      for (let cookie of cookies) {
-        const [key, value] = cookie.split('=');
-        if (key === name) return value;
-      }
-      return null;
-    }
+  <script>
+    // Utility functions
+    function getCookie(name) {
+      const cookies = document.cookie.split('; ');
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split('=');
+        if (key === name) return value;
+      }
+      return null;
+    }
 
-    // Funzione per eliminare un cookie
-    function deleteCookie(name) {
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    }
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
 
-    // Controlla se l'utente è loggato
-    const username = getCookie('username');
-    if (!username) {
-      alert('Devi effettuare il login prima di accedere a questa pagina.');
-      window.location.href = "login.html"; // Reindirizza alla pagina di login
-    } else {
-      alert(`Bentornato, ${username}!`);
-    }
+    // Check if user is logged in
+    const username = getCookie('username');
+    if (!username) {
+      alert('You must log in to access this page.');
+      window.location.href = "login.html";
+    } else {
+      alert(`Welcome back, ${username}!`);
+    }
 
-    // Gestione del logout
-    document.getElementById('logoutButton').addEventListener('click', function() {
-      deleteCookie('username');
-      alert('Logout effettuato!');
-      window.location.href = "login.html"; // Reindirizza alla pagina di login
-    });
-  </script>
+    // Handle password change
+    document.getElementById('changePasswordForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+
+      try {
+        // Load users.json
+        const response = await fetch('users.json');
+        const users = await response.json();
+
+        // Find the user and verify the current password
+        const user = users.find(user => user.username === username && user.password === currentPassword);
+
+        if (user) {
+          // Simulate updating the password (server-side in a real app)
+          user.password = newPassword;
+
+          alert('Password changed successfully!');
+          // In a real app, send this update to the server
+          console.log('Updated user data:', users);
+
+          // Clear form fields
+          document.getElementById('currentPassword').value = '';
+          document.getElementById('newPassword').value = '';
+        } else {
+          alert('Current password is incorrect.');
+        }
+      } catch (error) {
+        console.error('Error loading users:', error);
+        alert('Error changing password. Please try again later.');
+      }
+    });
+
+    // Handle logout
+    document.getElementById('logoutButton').addEventListener('click', function () {
+      deleteCookie('username');
+      alert('Logged out successfully!');
+      window.location.href = "login.html";
+    });
+  </script>
 </body>
 </html>
