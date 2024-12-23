@@ -1,8 +1,14 @@
 <?php
 header('Content-Type: application/json');
 
-// Legge i dati inviati dal client
+// Controlla se i dati sono stati inviati correttamente
 $input = json_decode(file_get_contents('php://input'), true);
+
+if (!$input || !isset($input['username']) || !isset($input['password'])) {
+    echo json_encode(['success' => false, 'error' => 'Invalid input.']);
+    exit;
+}
+
 $username = $input['username'];
 $password = $input['password'];
 
@@ -11,7 +17,7 @@ $file = 'users.txt';
 
 // Controlla se il file esiste
 if (!file_exists($file)) {
-    echo json_encode(['success' => false]);
+    echo json_encode(['success' => false, 'error' => 'User file not found.']);
     exit;
 }
 
@@ -30,5 +36,9 @@ foreach ($users as $user) {
 }
 
 // Risponde con successo o errore
-echo json_encode(['success' => $validUser]);
+if ($validUser) {
+    echo json_encode(['success' => true]);
+} else {
+    echo json_encode(['success' => false, 'error' => 'Invalid username or password.']);
+}
 ?>
