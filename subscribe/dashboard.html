@@ -1,104 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #141414;
+            color: #fff;
+            text-align: center;
+        }
+
+        header {
+            background-color: #000;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: #e50914;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .youtube-player {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            border: 3px solid #e50914;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #e50914;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+        }
+
+        footer {
+            background-color: #000;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        footer p {
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
-  <h1>Dashboard</h1>
-  <p>Welcome to your personalized dashboard!</p>
+  <h1>Dashboard</h1>
+  <p>Welcome to your dashboard!</p>
+  <form id="changePasswordForm">
+    <h3>Change Password</h3>
+    <label for="currentPassword">Current Password:</label>
+    <input type="password" id="currentPassword" required>
+    <br>
+    <label for="newPassword">New Password:</label>
+    <input type="password" id="newPassword" required>
+    <br>
+    <button type="submit">Change Password</button>
+  </form>
+  <button id="logoutButton">Logout</button>
 
-  <h2>Your Favorites</h2>
-  <ul id="favoritesList"></ul>
+  <script>
+    // Utility functions
+    function getCookie(name) {
+      const cookies = document.cookie.split('; ');
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split('=');
+        if (key === name) return value;
+      }
+      return null;
+    }
 
-  <form id="addFavoriteForm">
-    <input type="text" id="newFavorite" placeholder="Add a favorite" required>
-    <button type="submit">Add</button>
-  </form>
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
 
-  <button id="logoutButton">Logout</button>
+    // Check if user is logged in
+    const username = getCookie('username');
+    if (!username) {
+      alert('You must log in to access this page.');
+      window.location.href = "login.html";
+    } else {
+      alert(`Welcome back, ${username}!`);
+    }
 
-  <script>
-    // Utility functions
-    function getCookie(name) {
-      const cookies = document.cookie.split('; ');
-      for (let cookie of cookies) {
-        const [key, value] = cookie.split('=');
-        if (key === name) return value;
-      }
-      return null;
-    }
+    // Handle password change
+    document.getElementById('changePasswordForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
 
-    function deleteCookie(name) {
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    }
+      try {
+        // Load users.json
+        const response = await fetch('users.json');
+        const users = await response.json();
 
-    // Check if user is logged in
-    const username = getCookie('username');
-    if (!username) {
-      alert('You must log in to access this page.');
-      window.location.href = "login.html";
-    }
+        // Find the user and verify the current password
+        const user = users.find(user => user.username === username && user.password === currentPassword);
 
-    // Fetch and display user favorites
-    async function loadFavorites() {
-      try {
-        const response = await fetch('favorites.json');
-        const favoritesData = await response.json();
+        if (user) {
+          // Simulate updating the password (server-side in a real app)
+          user.password = newPassword;
 
-        const userFavorites = favoritesData[username] || [];
-        const favoritesList = document.getElementById('favoritesList');
-        favoritesList.innerHTML = '';
+          alert('Password changed successfully!');
+          // In a real app, send this update to the server
+          console.log('Updated user data:', users);
 
-        userFavorites.forEach(favorite => {
-          const li = document.createElement('li');
-          li.textContent = favorite;
-          favoritesList.appendChild(li);
-        });
-      } catch (error) {
-        console.error('Error loading favorites:', error);
-        alert('Could not load favorites. Please try again later.');
-      }
-    }
+          // Clear form fields
+          document.getElementById('currentPassword').value = '';
+          document.getElementById('newPassword').value = '';
+        } else {
+          alert('Current password is incorrect.');
+        }
+      } catch (error) {
+        console.error('Error loading users:', error);
+        alert('Error changing password. Please try again later.');
+      }
+    });
 
-    // Add a new favorite
-    document.getElementById('addFavoriteForm').addEventListener('submit', async function (event) {
-      event.preventDefault();
-      const newFavorite = document.getElementById('newFavorite').value;
-
-      try {
-        // Fetch existing favorites
-        const response = await fetch('favorites.json');
-        const favoritesData = await response.json();
-
-        // Update favorites for the current user
-        if (!favoritesData[username]) {
-          favoritesData[username] = [];
-        }
-        favoritesData[username].push(newFavorite);
-
-        // Simulate saving to the server (log the result to console)
-        console.log('Updated favorites data:', favoritesData);
-
-        alert('Favorite added!');
-        document.getElementById('newFavorite').value = '';
-        loadFavorites();
-      } catch (error) {
-        console.error('Error adding favorite:', error);
-        alert('Could not add favorite. Please try again later.');
-      }
-    });
-
-    // Load favorites on page load
-    loadFavorites();
-
-    // Handle logout
-    document.getElementById('logoutButton').addEventListener('click', function () {
-      deleteCookie('username');
-      alert('Logged out successfully!');
-      window.location.href = "login.html";
-    });
-  </script>
+    // Handle logout
+    document.getElementById('logoutButton').addEventListener('click', function () {
+      deleteCookie('username');
+      alert('Logged out successfully!');
+      window.location.href = "login.html";
+    });
+  </script>
 </body>
 </html>
