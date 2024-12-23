@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kids Mode</title>
+    <title>PARENTAL CONTROL | BG-TV</title>
     <style>
         * {
             margin: 0;
@@ -88,13 +88,13 @@
 </head>
 <body>
     <div class="container">
-        <h1>Enter Kids Mode</h1>
+        <h1>Entra in Modalità Bambino</h1>
         <input type="password" id="entryCode" class="input-code" placeholder="Enter Code">
         <button class="btn" onclick="enterKidsMode()">Enter</button>
     </div>
 
     <div class="kids-content">
-        <h1>Welcome to Kids Mode</h1>
+        <h1>Benvenuti in Modalità Bambino</h1>
         <div class="movies">
             <img src="https://via.placeholder.com/200x300?text=Movie+1" alt="Movie 1">
             <img src="https://via.placeholder.com/200x300?text=Movie+2" alt="Movie 2">
@@ -107,7 +107,7 @@
     </div>
 
     <footer>
-        <p>© 2024 MyFlix. All rights reserved.</p>
+        <p>© 2024 Bocca Gigante Production. All rights reserved.</p>
     </footer>
 
     <script>
@@ -129,7 +129,7 @@
                 container.style.display = 'none';
                 kidsContent.style.display = 'flex';
             } else {
-                alert("Incorrect Code. Try Again!");
+                alert("Codice Sbagliato, Riprova!");
             }
         }
 
@@ -140,7 +140,7 @@
                 kidsContent.style.display = 'none';
                 container.style.display = 'flex';
             } else {
-                alert("Incorrect Exit Code. Try Again!");
+                alert("Codice di Uscita Sbagliato,  Riprova!");
             }
         }
     </script>
