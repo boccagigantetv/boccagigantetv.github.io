@@ -99,41 +99,28 @@
         font-size: 14px;
         margin-top: 10px;
     }
-
   </style>
 </head>
 <body>
-  <header>
-    <h1>Login</h1>
-  </header>
-
-  <div class="container">
-    <form id="loginForm">
-      <label for="username">Username:</label>
-      <input type="text" id="username" required placeholder="Enter your username">
-      
-      <label for="password">Password:</label>
-      <input type="password" id="password" required placeholder="Enter your password">
-      
-      <button type="submit">Login</button>
-    </form>
-
-    <p class="error" id="error-message"></p>
-
-    <p>Don't have an account?</p>
-    <a href="https://boccagigantetv.github.io/pricing"><button>Sign Up</button></a>
-  </div>
-
-  <footer>
-    <p>© 2024 Bocca Gigante Production. All rights reserved.</p>
-  </footer>
+  <center>
+  <h1>Login</h1>
+  <form id="loginForm">
+    <label for="username">Username:</label>
+    <input type="text" id="username" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" required>
+    <br>
+    <button type="submit">Login</button>
+  </form>
+  </center>
 
   <script>
     // Funzione per impostare i cookie
     function setCookie(name, value, days) {
       const date = new Date();
       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-      document.cookie = ${name}=${value}; expires=${date.toUTCString()}; path=/;
+      document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
     }
 
     document.getElementById('loginForm').addEventListener('submit', async function(event) {
@@ -162,5 +149,7 @@
       }
     });
   </script>
+  <p>Non hai un account?</p>
+  <a href="https://boccagigantetv.github.io/pricing"><button>Registrati</button></a>
 </body>
 </html>
