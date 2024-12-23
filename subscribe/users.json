@@ -1,5 +1,10 @@
 [
-  { "username": "Ghost", "password": "Ghosty34" },
-  { "username": "Piccone", "password": "Bocca" },
-  { "username": "Felice", "password": "gogogo" }
+  {
+    "username": "Felice",
+    "password": "gogogo"
+  },
+  {
+    "username": "Piccone",
+    "password": "Bocca"
+  }
 ]
