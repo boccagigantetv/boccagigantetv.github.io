@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+      <style>
         * {
             margin: 0;
             padding: 0;
@@ -72,44 +72,44 @@
         footer p {
             font-size: 14px;
         }
-    </style>
+            </style>
 </head>
 <body>
-  <h1>Dashboard</h1>
-  <p>Benvenuto alla tua dashboard!</p>
-  <button id="logoutButton">Logout</button>
+  <h1>Dashboard</h1>
+  <p>Benvenuto nella tua area riservata!</p>
+  <button id="logoutButton">Logout</button>
 
-  <script>
-    // Utility functions
-    function getCookie(name) {
-      const cookies = document.cookie.split('; ');
-      for (let cookie of cookies) {
-        const [key, value] = cookie.split('=');
-        if (key === name) return value;
-      }
-      return null;
-    }
+  <script>
+    // Funzione per ottenere un cookie
+    function getCookie(name) {
+      const cookies = document.cookie.split('; ');
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split('=');
+        if (key === name) return value;
+      }
+      return null;
+    }
 
-    function deleteCookie(name) {
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    }
+    // Funzione per eliminare un cookie
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
 
-    // Check if user is logged in
-    const username = getCookie('username');
-    if (!username) {
-      alert('Devi accedere per visualizzare questa pagina.');
-      window.location.href = "login.html";
-    } else {
-      alert(`Bentornato, ${username}!`);
-    }
+    // Controlla se l'utente è loggato
+    const username = getCookie('username');
+    if (!username) {
+      alert('Devi effettuare il login prima di accedere a questa pagina.');
+      window.location.href = "login.html"; // Reindirizza alla pagina di login
+    } else {
+      alert(`Bentornato, ${username}!`);
+    }
 
-    // Handle logout
-    document.getElementById('logoutButton').addEventListener('click', function () {
-      deleteCookie('username');
-      alert('Uscito dall'account con successo!');
-      window.location.href = "login.html";
-    });
-  </script>
-    <a href="https://boccagigantetv.github.io/"><button>HOME</button></a>
+    // Gestione del logout
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      deleteCookie('username');
+      alert('Logout effettuato!');
+      window.location.href = "login.html"; // Reindirizza alla pagina di login
+    });
+  </script>
 </body>
 </html>
