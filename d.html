@@ -3,63 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Installazione APK</title>
+    <title>Download e Installazione APK</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-            background-color: #f9f9f9;
+            text-align: center;
+            background-color: #f4f4f9;
             color: #333;
+            padding: 20px;
         }
         .container {
-            max-width: 800px;
             margin: 50px auto;
             padding: 20px;
             background: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: #444;
-        }
-        ol {
-            padding-left: 20px;
-        }
-        li {
-            margin: 10px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
         }
         .download-button {
-            display: block;
-            width: 200px;
+            display: inline-block;
             margin: 20px auto;
-            padding: 10px 20px;
+            padding: 15px 30px;
+            font-size: 18px;
             background-color: #007bff;
             color: #fff;
-            text-align: center;
             text-decoration: none;
             border-radius: 5px;
-            font-size: 16px;
         }
         .download-button:hover {
             background-color: #0056b3;
         }
     </style>
+    <script>
+        // Funzione per avviare il download automatico
+        function avviaDownload() {
+            const link = document.createElement('a');
+            link.href = "https://www.mediafire.com/file/6rixwmdbwdayv4k/base.apk/file"; // URL del tuo APK
+            link.download = "app.apk";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            alert('Download avviato. Segui le istruzioni per installare l\'app.');
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-        <h1>Guida all'installazione di un APK</h1>
-        <p>Segui questi passaggi per installare un file APK sul tuo dispositivo Android:</p>
-        <ol>
-            <li>Scarica il file APK facendo clic sul pulsante qui sotto.</li>
-            <li>Se non l'hai già fatto, vai su <strong>Impostazioni</strong> > <strong>Sicurezza</strong> e abilita l'opzione "Origini sconosciute".</li>
-            <li>Trova il file APK scaricato nella cartella <strong>Download</strong> o in quella che hai specificato.</li>
-            <li>Tocca il file APK per avviare l'installazione e segui le istruzioni sullo schermo.</li>
-            <li>Una volta completata l'installazione, potrai aprire l'app direttamente.</li>
-        </ol>
-        <a href="base.apk" class="download-button">Scarica APK</a>
+        <h1>Installa la tua App</h1>
+        <p>Il download del file APK inizierà automaticamente. Dopo aver scaricato il file, tocca per installarlo.</p>
+        <a href="javascript:avviaDownload()" class="download-button">Avvia Download</a>
+        <p>Se il download non parte, verifica le impostazioni di sicurezza del tuo dispositivo.</p>
     </div>
 </body>
 </html>
