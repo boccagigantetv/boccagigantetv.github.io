@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Il Film Di Pete</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #141414;
+            color: #fff;
+            text-align: center;
+        }
+
+        header {
+            background-color: #000;
+            padding: 20px;
+        }
+
+        header h1 {
+            font-size: 28px;
+            color: #e50914;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .youtube-player {
+            width: 100%;
+            max-width: 800px;
+            height: 450px;
+            border: 3px solid #e50914;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .description {
+            margin: 20px 0;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #e50914;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+        }
+
+        footer {
+            background-color: #000;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        footer p {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Guarda Il Film</h1>
+    </header>
+
+    <div class="container">
+        <!-- YouTube Player -->
+        <iframe 
+            class="youtube-player" 
+            src="https://www.youtube.com/embed/" 
+            title="Bocca Gigante" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+        </iframe>
+
+        <div class="description">
+            <h2>Minecraft: Il Film Di Pete</h2>
+            <p>
+                Unisciti insieme a Pete nel 2030 con i suoi amici, in un mondo pieno di scoperte e Herobrine!
+            </p>
+        </div>
+
+        <button onclick="reloadVideo()">Riguarda il Film</button>
+    </div>
+
+    <button id="logoutButton">Logout</button>
+
+  <script>
+    // Funzione per ottenere un cookie
+    function getCookie(name) {
+      const cookies = document.cookie.split('; ');
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split('=');
+        if (key === name) return value;
+      }
+      return null;
+    }
+
+    // Funzione per eliminare un cookie
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+    }
+
+    // Controlla se l'utente è loggato
+    const username = getCookie('username');
+    if (!username) {
+      alert('Devi effettuare il login prima di accedere a questa pagina.');
+      window.location.href = "https://boccagigantetv.github.io/subscribe/login.html"; // Reindirizza alla pagina di login
+    } else {
+      alert(`Bentornato, ${username}!`);
+    }
+
+    // Gestione del logout
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      deleteCookie('username');
+      alert('Logout effettuato!');
+      window.location.href = "https://boccagigantetv.github.io/subscribe/login.html"; // Reindirizza alla pagina di login
+    });
+        </script>
+
+    <footer>
+        <p>© 2024 Bocca Gigante Production. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function reloadVideo() {
+            const player = document.querySelector('.youtube-player');
+            const src = player.src;
+            player.src = ''; // Temporarily clear the source
+            player.src = src; // Reload the original source
+        }
+    </script>
+</body>
+</html>
