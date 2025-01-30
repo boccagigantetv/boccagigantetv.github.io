@@ -1,46 +1,57 @@
 [
   {
     "username": "Piccone",
-    "password": "enetroccoli"
+    "password": "enetroccoli",
+    "admin": true
+    
   },
   
   {
     "username": "Ghost",
-    "password": "Ghosty34"
+    "password": "Ghosty34",
+    "admin": true
   },
   
   {
     "username": "Flobindo",
-    "password": "aaaaa"
+    "password": "aaaaa",
+    "admin": false
   },
 
   {
     "username": "ale_gamer17",
-    "password": "alegratomato"
+    "password": "alegratomato",
+    "admin": false
   },
 
   {
     "username": "Felice",
-    "password": "gogogo"
+    "password": "gogogo",
+    "admin": false
   },
   {
     "username": "BillyAnimate",
-    "password": "boccagigante"
+    "password": "boccagigante",
+    "admin": true
   },
   {
     "username": "scuolaf",
-    "password": "flavio"
+    "password": "flavio",
+    "admin": false
   },
   {
     "username": "if",
-    "password": "flavio"
+    "password": "flavio",
+    "admin": false
   },
   {
     "username": "admin",
-    "password": "enetroccoli"
+    "password": "enetroccoli",
+    "admin": true
   },
   {
     "username": "famigliaticcio",
-    "password": "ticcio77"
+    "password": "ticcio77",
+    "admin": false
   }
 ]

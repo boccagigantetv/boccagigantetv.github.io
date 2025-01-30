@@ -104,6 +104,27 @@
       alert(`Bentornato, ${username}!`);
     }
 
+         // Carica la lista utenti da users.json
+         fetch('users.json')
+        .then(response => response.json())
+        .then(users => {
+          // Trova l'utente loggato
+          const user = users.find(u => u.username === username);
+          if (user && user.admin) {
+            document.getElementById('userList').style.display = 'block';
+            const userList = document.getElementById('users');
+
+            // Mostra la lista utenti
+            users.forEach(u => {
+              const li = document.createElement('li');
+              li.textContent = `Username: ${u.username}, Admin: ${u.admin ? "✔" : "❌"}`;
+              userList.appendChild(li);
+            });
+          }
+        })
+        .catch(error => console.error('Errore nel caricamento della lista utenti:', error));
+
+
     // Gestione del logout
     document.getElementById('logoutButton').addEventListener('click', function() {
       deleteCookie('username');
