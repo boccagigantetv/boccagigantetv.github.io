@@ -49,7 +49,7 @@
       const users = getUsers();
       const usersList = document.getElementById('usersList');
       usersList.innerHTML = ''; // Pulisce la lista esistente
-      const username = document.cookie.split('=')[1]; // Prende l'username dal cookie
+      const username = getCookie('username'); // Prende l'username dal cookie
       const currentUser = users.find(u => u.username === username);
 
       const adminSection = document.getElementById('adminSection');
@@ -73,6 +73,16 @@
         // Se non è admin, nascondi la gestione utenti
         adminSection.style.display = 'none';
       }
+    }
+
+    // Funzione per ottenere un cookie
+    function getCookie(name) {
+      const cookies = document.cookie.split('; ');
+      for (let cookie of cookies) {
+        const [key, value] = cookie.split('=');
+        if (key === name) return value;
+      }
+      return null;
     }
 
     // Funzione per creare un nuovo utente
