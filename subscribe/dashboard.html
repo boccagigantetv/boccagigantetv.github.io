@@ -154,6 +154,8 @@
         users.forEach(u => {
           const li = document.createElement('li');
           li.textContent = `${u.username} - ${u.admin ? 'Admin' : 'Utente'}`;
+          
+          // Bottone per eliminare
           const deleteButton = document.createElement('button');
           deleteButton.textContent = 'Elimina';
           deleteButton.onclick = () => deleteUser(u.username);
