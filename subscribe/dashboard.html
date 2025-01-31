@@ -5,68 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <style>
-    /* CSS base */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #141414;
-      color: white;
-      text-align: center;
-    }
-
-    header {
-      background-color: #000;
-      padding: 20px;
-    }
-
-    header h1 {
-      font-size: 28px;
-      color: #e50914;
-    }
-
-    .container {
-      margin: 20px auto;
-      padding: 20px;
-      width: 80%;
-      background-color: #222;
-      border-radius: 10px;
-    }
-
-    button {
-      background-color: #e50914;
-      color: #fff;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      transform: scale(1.05);
-    }
-
-    .user-list {
-      margin-top: 20px;
-      list-style-type: none;
-      padding: 0;
-    }
-
-    .user-item {
-      margin: 10px 0;
-      background-color: #333;
-      padding: 10px;
-      border-radius: 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .user-item button {
-      margin-left: 10px;
-    }
-
-    .admin-container {
-      display: none;
-    }
+    body { font-family: Arial, sans-serif; background-color: #141414; color: white; text-align: center; }
+    header { background-color: #000; padding: 20px 0; text-align: center; }
+    .container { width: 80%; margin: 20px auto; background-color: #222; padding: 20px; border-radius: 10px; }
+    input, button { padding: 10px; margin: 10px; width: 30%; }
+    button { background-color: #e50914; color: white; border: none; cursor: pointer; }
+    .user-list { list-style-type: none; padding: 0; }
+    .user-item { background-color: #333; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; }
   </style>
 </head>
 <body>
@@ -81,18 +26,14 @@
     <input type="password" id="newPassword" placeholder="Nuova Password" />
     <button id="createUserButton">Crea Utente</button>
 
-    <!-- Se l'utente è admin, vedrà la lista utenti -->
-    <div class="admin-container" id="adminContainer">
-      <ul id="usersList" class="user-list"></ul>
-    </div>
-
+    <h3>Lista Utenti</h3>
+    <ul id="usersList" class="user-list"></ul>
   </div>
 
   <script>
     // Funzione per ottenere gli utenti dal localStorage
     function getUsers() {
-      const users = localStorage.getItem('users');
-      return users ? JSON.parse(users) : [];
+      return JSON.parse(localStorage.getItem('users')) || [];
     }
 
     // Funzione per salvare gli utenti nel localStorage
@@ -100,35 +41,33 @@
       localStorage.setItem('users', JSON.stringify(users));
     }
 
-    // Funzione per caricare la lista utenti
+    // Funzione per caricare gli utenti e visualizzarli
     function loadUsers() {
       const users = getUsers();
       const usersList = document.getElementById('usersList');
-      const adminContainer = document.getElementById('adminContainer');
       usersList.innerHTML = ''; // Pulisce la lista esistente
+      const username = document.cookie.split('=')[1]; // Prende l'username dal cookie
+      const currentUser = users.find(u => u.username === username);
 
-      const username = getCookie('username');
-      const currentUser = users.find(user => user.username === username);
-
-      // Se l'utente è admin, mostra la lista
       if (currentUser && currentUser.admin) {
-        adminContainer.style.display = 'block';
-        users.forEach((user) => {
-          const userItem = document.createElement('li');
-          userItem.classList.add('user-item');
-          userItem.innerHTML = `
+        // Se l'utente è admin, mostra la lista utenti
+        users.forEach(user => {
+          const li = document.createElement('li');
+          li.classList.add('user-item');
+          li.innerHTML = `
             <span>Username: ${user.username}, Admin: ${user.admin ? '✔' : '❌'}</span>
             <button onclick="deleteUser('${user.username}')">Elimina</button>
             <button onclick="editUser('${user.username}')">Modifica</button>
           `;
-          usersList.appendChild(userItem);
+          usersList.appendChild(li);
         });
       } else {
-        adminContainer.style.display = 'none'; // Nasconde la lista per i non-admin
+        // Se non è admin, non visualizza nulla
+        alert('Non hai i permessi per gestire gli utenti.');
       }
     }
 
-    // Funzione per aggiungere un nuovo utente
+    // Funzione per creare un nuovo utente
     document.getElementById('createUserButton').addEventListener('click', function() {
       const username = document.getElementById('newUsername').value;
       const password = document.getElementById('newPassword').value;
@@ -138,7 +77,7 @@
         const newUser = { username: username, password: password, admin: false };
         users.push(newUser);
         saveUsers(users);
-        loadUsers(); // Ricarica la lista
+        loadUsers();  // Ricarica la lista utenti
       } else {
         alert('Compila tutti i campi!');
       }
@@ -146,16 +85,16 @@
 
     // Funzione per eliminare un utente
     function deleteUser(username) {
-      const users = getUsers();
-      const updatedUsers = users.filter(user => user.username !== username);
-      saveUsers(updatedUsers);
+      let users = getUsers();
+      users = users.filter(user => user.username !== username);
+      saveUsers(users);
       loadUsers(); // Ricarica la lista
     }
 
     // Funzione per modificare un utente
     function editUser(username) {
       const users = getUsers();
-      const user = users.find(user => user.username === username);
+      const user = users.find(u => u.username === username);
       if (user) {
         const newUsername = prompt('Nuovo Username:', user.username);
         const newPassword = prompt('Nuova Password:', user.password);
@@ -168,24 +107,14 @@
       }
     }
 
-    // Funzione per il logout
+    // Funzione di logout
     document.getElementById('logoutButton').addEventListener('click', function() {
-      deleteCookie('username');
+      document.cookie = 'username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
       alert('Logout effettuato!');
-      window.location.href = "login.html"; // Reindirizza alla pagina di login
+      window.location.href = 'login.html';
     });
 
-    // Funzione per ottenere il cookie dell'utente
-    function getCookie(name) {
-      const cookies = document.cookie.split('; ');
-      for (let cookie of cookies) {
-        const [key, value] = cookie.split('=');
-        if (key === name) return value;
-      }
-      return null;
-    }
-
-    // Carica la lista utenti all'avvio
+    // Carica gli utenti all'avvio
     loadUsers();
   </script>
 </body>
