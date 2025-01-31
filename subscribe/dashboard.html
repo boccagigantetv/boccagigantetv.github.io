@@ -71,6 +71,10 @@
       font-size: 16px;
     }
 
+    .error {
+      color: red;
+    }
+
   </style>
 </head>
 <body>
@@ -169,6 +173,8 @@
         users.push(newUser);
         localStorage.setItem('users', JSON.stringify(users)); // Salva la lista aggiornata
         loadUsers(users); // Ricarica la lista aggiornata
+      } else {
+        alert("Tutti i campi sono obbligatori!");
       }
     });
 
