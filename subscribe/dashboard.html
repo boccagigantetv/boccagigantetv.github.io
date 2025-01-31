@@ -5,14 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <style>
-    body { font-family: Arial, sans-serif; background-color: #141414; color: white; text-align: center; }
-    header { background-color: #000; padding: 20px 0; text-align: center; }
-    .container { width: 80%; margin: 20px auto; background-color: #222; padding: 20px; border-radius: 10px; }
-    input, button { padding: 10px; margin: 10px; width: 30%; }
-    button { background-color: #e50914; color: white; border: none; cursor: pointer; }
-    .user-list { list-style-type: none; padding: 0; }
-    .user-item { background-color: #333; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; }
-    .admin-section { display: none; } /* Nascondi la sezione admin per utenti non admin */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #141414;
+      color: white;
+      text-align: center;
+    }
+    header {
+      background-color: #000;
+      padding: 20px 0;
+    }
+    .container {
+      width: 80%;
+      margin: 20px auto;
+      background-color: #222;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      width: 30%;
+    }
+    button {
+      background-color: #e50914;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .user-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .user-item {
+      background-color: #333;
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .admin-section {
+      display: none; /* Nascondi per utenti non admin */
+    }
   </style>
 </head>
 <body>
@@ -44,37 +78,6 @@
       localStorage.setItem('users', JSON.stringify(users));
     }
 
-    // Funzione per caricare gli utenti e visualizzarli
-    function loadUsers() {
-      const users = getUsers();
-      const usersList = document.getElementById('usersList');
-      usersList.innerHTML = ''; // Pulisce la lista esistente
-      const username = getCookie('username'); // Prende l'username dal cookie
-      const currentUser = users.find(u => u.username === username);
-
-      const adminSection = document.getElementById('adminSection');
-
-      if (currentUser && currentUser.admin) {
-        // Se l'utente è admin, mostra la sezione di gestione utenti
-        adminSection.style.display = 'block';
-
-        // Visualizza la lista utenti
-        users.forEach(user => {
-          const li = document.createElement('li');
-          li.classList.add('user-item');
-          li.innerHTML = `
-            <span>Username: ${user.username}, Admin: ${user.admin ? '✔' : '❌'}</span>
-            <button onclick="deleteUser('${user.username}')">Elimina</button>
-            <button onclick="editUser('${user.username}')">Modifica</button>
-          `;
-          usersList.appendChild(li);
-        });
-      } else {
-        // Se non è admin, nascondi la gestione utenti
-        adminSection.style.display = 'none';
-      }
-    }
-
     // Funzione per ottenere un cookie
     function getCookie(name) {
       const cookies = document.cookie.split('; ');
@@ -85,6 +88,22 @@
       return null;
     }
 
+    // Funzione per caricare gli utenti e visualizzarli
+    function loadUsers() {
+      const users = getUsers();
+      const username = getCookie('username'); // Prende l'username dal cookie
+      const currentUser = users.find(u => u.username === username);
+
+      const adminSection = document.getElementById('adminSection');
+
+      // Solo gli admin possono vedere la gestione utenti
+      if (currentUser && currentUser.admin) {
+        adminSection.style.display = 'block'; // Mostra la gestione utenti per admin
+      } else {
+        adminSection.style.display = 'none'; // Nascondi per utenti non admin
+      }
+    }
+
     // Funzione per creare un nuovo utente
     document.getElementById('createUserButton').addEventListener('click', function() {
       const username = document.getElementById('newUsername').value;
@@ -92,7 +111,7 @@
 
       if (username && password) {
         const users = getUsers();
-        const newUser = { username: username, password: password, admin: false };
+        const newUser = { username: username, password: password, admin: false }; // I nuovi utenti non sono admin
         users.push(newUser);
         saveUsers(users);
         loadUsers();  // Ricarica la lista utenti
@@ -100,30 +119,6 @@
         alert('Compila tutti i campi!');
       }
     });
-
-    // Funzione per eliminare un utente
-    function deleteUser(username) {
-      let users = getUsers();
-      users = users.filter(user => user.username !== username);
-      saveUsers(users);
-      loadUsers(); // Ricarica la lista
-    }
-
-    // Funzione per modificare un utente
-    function editUser(username) {
-      const users = getUsers();
-      const user = users.find(u => u.username === username);
-      if (user) {
-        const newUsername = prompt('Nuovo Username:', user.username);
-        const newPassword = prompt('Nuova Password:', user.password);
-        if (newUsername && newPassword) {
-          user.username = newUsername;
-          user.password = newPassword;
-          saveUsers(users);
-          loadUsers(); // Ricarica la lista
-        }
-      }
-    }
 
     // Funzione di logout
     document.getElementById('logoutButton').addEventListener('click', function() {
