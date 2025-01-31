@@ -90,25 +90,13 @@
       return null;
     }
 
-    // Funzione per impostare un cookie
-    function setCookie(name, value, days) {
-      const date = new Date();
-      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Imposta scadenza
-      document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
-    }
-
-    // Funzione per eliminare un cookie
-    function deleteCookie(name) {
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-    }
-
     // Funzione per gestire il login e i cookie
     function checkLogin(users) {
       const username = getCookie('username');
       const password = getCookie('password');
 
       if (!username || !password) {
-        // Se non c'è il cookie per l'username o la password, reindirizza al login
+        // Se non ci sono cookie, reindirizza al login
         alert('Devi effettuare il login prima di accedere a questa pagina.');
         window.location.href = "login.html";
       } else {
@@ -116,14 +104,14 @@
         const user = users.find(u => u.username === username && u.password === password);
 
         if (!user) {
-          alert('Username o password errati.');
-          deleteCookie('username');
-          deleteCookie('password');
-          window.location.href = "login.html"; // Reindirizza al login
+          alert('Credenziali errate.');
+          document.cookie = 'username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';  // Elimina i cookie
+          document.cookie = 'password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+          window.location.href = "login.html";  // Reindirizza al login
         } else {
           alert(`Bentornato, ${username}!`);
           if (user.admin) {
-            // Se l'utente è un admin, mostra la lista degli utenti
+            // Se l'utente è admin, mostra la lista degli utenti
             document.getElementById('userList').style.display = 'block';
             const userList = document.getElementById('users');
 
@@ -142,24 +130,12 @@
             document.querySelectorAll('.delete-btn').forEach(btn => {
               btn.addEventListener('click', (event) => {
                 const usernameToDelete = event.target.dataset.username;
-                // Logica per eliminare l'utente (modifica il tuo file `users.json` sul server)
                 alert(`Utente ${usernameToDelete} eliminato!`);
               });
             });
-
-            // Aggiunta di un nuovo utente
-            document.getElementById('addUserButton').addEventListener('click', () => {
-              const newUsername = document.getElementById('newUsername').value;
-              if (newUsername) {
-                // Logica per aggiungere un nuovo utente (modifica il tuo file `users.json` sul server)
-                alert(`Utente ${newUsername} aggiunto!`);
-              } else {
-                alert('Inserisci un nome utente valido.');
-              }
-            });
           } else {
             alert('Non hai i privilegi di amministratore per modificare gli utenti.');
-            window.location.href = "login.html"; // Reindirizza alla pagina di login o alla home
+            window.location.href = "login.html";  // Reindirizza alla pagina di login
           }
         }
       }
@@ -175,13 +151,12 @@
 
     // Gestione del logout
     document.getElementById('logoutButton').addEventListener('click', function() {
-      deleteCookie('username');
-      deleteCookie('password');
+      document.cookie = 'username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';  // Elimina i cookie
+      document.cookie = 'password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
       alert('Logout effettuato!');
-      window.location.href = "login.html"; // Reindirizza alla pagina di login
+      window.location.href = "login.html";  // Reindirizza alla pagina di login
     });
   </script>
 
-  <a href="https://boccagigantetv.github.io/"><button>HOME</button></a>
 </body>
 </html>
