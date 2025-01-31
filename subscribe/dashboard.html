@@ -4,80 +4,85 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
-      <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #141414;
-            color: #fff;
-            text-align: center;
-        }
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #141414;
+        color: #fff;
+        text-align: center;
+    }
 
-        header {
-            background-color: #000;
-            padding: 20px;
-        }
+    header {
+        background-color: #000;
+        padding: 20px;
+    }
 
-        header h1 {
-            font-size: 28px;
-            color: #e50914;
-        }
+    header h1 {
+        font-size: 28px;
+        color: #e50914;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-        }
+    .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+    }
 
-        .youtube-player {
-            width: 100%;
-            max-width: 800px;
-            height: 450px;
-            border: 3px solid #e50914;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
+    .user-item {
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: #333;
+        border-radius: 5px;
+    }
 
-        .description {
-            margin: 20px 0;
-            font-size: 16px;
-        }
+    button {
+        background-color: #e50914;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
 
-        button {
-            background-color: #e50914;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+    button:hover {
+        transform: scale(1.1);
+    }
 
-        button:hover {
-            transform: scale(1.1);
-        }
+    #userList {
+        margin-top: 20px;
+    }
 
-        footer {
-            background-color: #000;
-            padding: 20px;
-            margin-top: 20px;
-        }
+    .delete-btn {
+        background-color: #ff4c4c;
+        margin-left: 10px;
+    }
 
-        footer p {
-            font-size: 14px;
-        }
-            </style>
+  </style>
 </head>
 <body>
   <h1>Dashboard</h1>
   <p>Benvenuto nella tua area riservata!</p>
   <button id="logoutButton">Logout</button>
+
+  <div class="container">
+    <div id="userList" style="display: none;">
+      <h2>Lista Utenti</h2>
+      <ul id="users"></ul>
+      <div>
+        <h3>Aggiungi un nuovo utente:</h3>
+        <input type="text" id="newUsername" placeholder="Nome utente" />
+        <button id="addUserButton">Aggiungi Utente</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     // Funzione per ottenere un cookie
@@ -95,43 +100,79 @@
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     }
 
-    // Controlla se l'utente è loggato
-    const username = getCookie('username');
-    if (!username) {
-      alert('Devi effettuare il login prima di accedere a questa pagina.');
-      window.location.href = "login.html"; // Reindirizza alla pagina di login
-    } else {
-      alert(`Bentornato, ${username}!`);
-    }
+    // Carica gli utenti dal file JSON
+    fetch('users.json')
+      .then(response => response.json())
+      .then(users => {
+        const username = getCookie('username');
+        const password = getCookie('password'); // Aggiungi una password ai cookie
 
-         // Carica la lista utenti da users.json
-         fetch('users.json')
-        .then(response => response.json())
-        .then(users => {
-          // Trova l'utente loggato
-          const user = users.find(u => u.username === username);
-          if (user && user.admin) {
+        if (!username || !password) {
+          alert('Devi effettuare il login prima di accedere a questa pagina.');
+          window.location.href = "login.html"; // Reindirizza alla pagina di login
+        }
+
+        // Trova l'utente che sta cercando di loggarsi
+        const user = users.find(u => u.username === username && u.password === password);
+
+        if (!user) {
+          alert('Username o password errati.');
+          window.location.href = "login.html"; // Reindirizza alla pagina di login
+        } else {
+          alert(`Bentornato, ${username}!`);
+
+          if (user.admin) {
+            // Se l'utente è un admin, mostra la lista degli utenti
             document.getElementById('userList').style.display = 'block';
             const userList = document.getElementById('users');
 
-            // Mostra la lista utenti
+            // Mostra la lista degli utenti
             users.forEach(u => {
               const li = document.createElement('li');
-              li.textContent = `Username: ${u.username}, Admin: ${u.admin ? "✔" : "❌"}`;
+              li.classList.add('user-item');
+              li.innerHTML = `
+                Username: ${u.username}, Admin: ${u.admin ? "✔" : "❌"}
+                <button class="delete-btn" data-username="${u.username}">Elimina</button>
+              `;
               userList.appendChild(li);
             });
-          }
-        })
-        .catch(error => console.error('Errore nel caricamento della lista utenti:', error));
 
+            // Gestione eliminazione utente
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+              btn.addEventListener('click', (event) => {
+                const usernameToDelete = event.target.dataset.username;
+                // Logica per eliminare l'utente (modifica il tuo file `users.json` sul server)
+                alert(`Utente ${usernameToDelete} eliminato!`);
+              });
+            });
+
+            // Aggiunta di un nuovo utente
+            document.getElementById('addUserButton').addEventListener('click', () => {
+              const newUsername = document.getElementById('newUsername').value;
+              if (newUsername) {
+                // Logica per aggiungere un nuovo utente (modifica il tuo file `users.json` sul server)
+                alert(`Utente ${newUsername} aggiunto!`);
+              } else {
+                alert('Inserisci un nome utente valido.');
+              }
+            });
+          } else {
+            alert('Non hai i privilegi di amministratore per modificare gli utenti.');
+            window.location.href = "login.html"; // Reindirizza alla pagina di login o alla home
+          }
+        }
+      })
+      .catch(error => console.error('Errore nel caricamento della lista utenti:', error));
 
     // Gestione del logout
     document.getElementById('logoutButton').addEventListener('click', function() {
       deleteCookie('username');
+      deleteCookie('password');
       alert('Logout effettuato!');
       window.location.href = "login.html"; // Reindirizza alla pagina di login
     });
   </script>
+
   <a href="https://boccagigantetv.github.io/"><button>HOME</button></a>
 </body>
 </html>
