@@ -12,6 +12,7 @@
     button { background-color: #e50914; color: white; border: none; cursor: pointer; }
     .user-list { list-style-type: none; padding: 0; }
     .user-item { background-color: #333; padding: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; }
+    .admin-section { display: none; } /* Nascondi la sezione admin per utenti non admin */
   </style>
 </head>
 <body>
@@ -22,12 +23,15 @@
 
   <div class="container">
     <h2>Gestione Utenti</h2>
-    <input type="text" id="newUsername" placeholder="Nuovo Username" />
-    <input type="password" id="newPassword" placeholder="Nuova Password" />
-    <button id="createUserButton">Crea Utente</button>
+    <div id="adminSection" class="admin-section">
+      <input type="text" id="newUsername" placeholder="Nuovo Username" />
+      <input type="password" id="newPassword" placeholder="Nuova Password" />
+      <button id="createUserButton">Crea Utente</button>
 
-    <h3>Lista Utenti</h3>
-    <ul id="usersList" class="user-list"></ul>
+      <h3>Lista Utenti</h3>
+      <ul id="usersList" class="user-list"></ul>
+    </div>
+    <p id="noPermissionMessage" style="color: red; display: none;">Non hai i permessi per gestire gli utenti.</p>
   </div>
 
   <script>
@@ -49,8 +53,15 @@
       const username = document.cookie.split('=')[1]; // Prende l'username dal cookie
       const currentUser = users.find(u => u.username === username);
 
+      const adminSection = document.getElementById('adminSection');
+      const noPermissionMessage = document.getElementById('noPermissionMessage');
+
       if (currentUser && currentUser.admin) {
-        // Se l'utente è admin, mostra la lista utenti
+        // Se l'utente è admin, mostra la sezione di gestione utenti
+        adminSection.style.display = 'block';
+        noPermissionMessage.style.display = 'none';
+
+        // Visualizza la lista utenti
         users.forEach(user => {
           const li = document.createElement('li');
           li.classList.add('user-item');
@@ -62,8 +73,9 @@
           usersList.appendChild(li);
         });
       } else {
-        // Se non è admin, non visualizza nulla
-        alert('Non hai i permessi per gestire gli utenti.');
+        // Se non è admin, non mostra la gestione utenti e mostra il messaggio di errore
+        adminSection.style.display = 'none';
+        noPermissionMessage.style.display = 'block';
       }
     }
 
