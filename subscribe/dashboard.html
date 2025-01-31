@@ -65,6 +65,10 @@
       <h3>Lista Utenti</h3>
       <ul id="usersList" class="user-list"></ul>
     </div>
+
+    <div id="noPermissions" style="display:none;">
+      <p>Non hai i permessi per gestire gli utenti.</p>
+    </div>
   </div>
 
   <script>
@@ -95,12 +99,28 @@
       const currentUser = users.find(u => u.username === username);
 
       const adminSection = document.getElementById('adminSection');
+      const noPermissions = document.getElementById('noPermissions');
 
       // Solo gli admin possono vedere la gestione utenti
       if (currentUser && currentUser.admin) {
         adminSection.style.display = 'block'; // Mostra la gestione utenti per admin
+        noPermissions.style.display = 'none'; // Nascondi messaggio permessi
       } else {
         adminSection.style.display = 'none'; // Nascondi per utenti non admin
+        noPermissions.style.display = 'block'; // Mostra messaggio permessi
+      }
+
+      // Mostra la lista utenti solo per gli admin
+      if (currentUser && currentUser.admin) {
+        const usersList = document.getElementById('usersList');
+        usersList.innerHTML = ''; // Svuota la lista
+
+        users.forEach(user => {
+          const li = document.createElement('li');
+          li.classList.add('user-item');
+          li.textContent = `Username: ${user.username}, Admin: ${user.admin ? "✔" : "❌"}`;
+          usersList.appendChild(li);
+        });
       }
     }
 
