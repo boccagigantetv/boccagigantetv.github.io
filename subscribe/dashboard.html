@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,77 +11,66 @@
       color: white;
       text-align: center;
     }
+
     header {
       background-color: #000;
-      padding: 20px 0;
-    }
-    .container {
-      width: 80%;
-      margin: 20px auto;
-      background-color: #222;
       padding: 20px;
+    }
+
+    header h1 {
+      font-size: 28px;
+      color: #e50914;
+    }
+
+    .container {
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 800px;
+      background-color: rgba(0, 0, 0, 0.8);
       border-radius: 10px;
     }
-    input, button {
-      padding: 10px;
-      margin: 10px;
-      width: 30%;
-    }
+
     button {
       background-color: #e50914;
       color: white;
       border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
       cursor: pointer;
     }
-    .user-list {
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    #userList {
+      margin-top: 20px;
       list-style-type: none;
-      padding: 0;
     }
-    .user-item {
-      background-color: #333;
-      padding: 10px;
+
+    #userList li {
       margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .admin-section {
-      display: none; /* Nascondi per utenti non admin */
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Dashboard</h1>
+    <h1>Benvenuto nella tua Dashboard</h1>
     <button id="logoutButton">Logout</button>
   </header>
 
   <div class="container">
-    <h2>Gestione Utenti</h2>
-    <div id="adminSection" class="admin-section">
-      <input type="text" id="newUsername" placeholder="Nuovo Username" />
-      <input type="password" id="newPassword" placeholder="Nuova Password" />
-      <button id="createUserButton">Crea Utente</button>
-
-      <h3>Lista Utenti</h3>
-      <ul id="usersList" class="user-list"></ul>
+    <div id="adminSection" style="display:none;">
+      <h2>Gestione Utenti</h2>
+      <ul id="userList"></ul>
     </div>
-
-    <div id="noPermissions" style="display:none;">
-      <p>Non hai i permessi per gestire gli utenti.</p>
+    <div id="noPermissionsMessage" style="display:none;">
+      <h2>Non hai i permessi per gestire gli utenti.</h2>
     </div>
   </div>
 
   <script>
-    // Funzione per ottenere gli utenti dal localStorage
-    function getUsers() {
-      return JSON.parse(localStorage.getItem('users')) || [];
-    }
-
-    // Funzione per salvare gli utenti nel localStorage
-    function saveUsers(users) {
-      localStorage.setItem('users', JSON.stringify(users));
-    }
-
     // Funzione per ottenere un cookie
     function getCookie(name) {
       const cookies = document.cookie.split('; ');
@@ -92,63 +81,49 @@
       return null;
     }
 
-    // Funzione per caricare gli utenti e visualizzarli
-    function loadUsers() {
-      const users = getUsers();
-      const username = getCookie('username'); // Prende l'username dal cookie
-      const currentUser = users.find(u => u.username === username);
+    // Funzione per eliminare un cookie
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+    }
 
-      const adminSection = document.getElementById('adminSection');
-      const noPermissions = document.getElementById('noPermissions');
+    // Carica la lista degli utenti e controlla i permessi
+    async function initDashboard() {
+      const username = getCookie('username');
 
-      // Solo gli admin possono vedere la gestione utenti
-      if (currentUser && currentUser.admin) {
-        adminSection.style.display = 'block'; // Mostra la gestione utenti per admin
-        noPermissions.style.display = 'none'; // Nascondi messaggio permessi
-      } else {
-        adminSection.style.display = 'none'; // Nascondi per utenti non admin
-        noPermissions.style.display = 'block'; // Mostra messaggio permessi
+      if (!username) {
+        alert('Devi effettuare il login prima di accedere a questa pagina.');
+        window.location.href = "login.html";
+        return;
       }
 
-      // Mostra la lista utenti solo per gli admin
-      if (currentUser && currentUser.admin) {
-        const usersList = document.getElementById('usersList');
-        usersList.innerHTML = ''; // Svuota la lista
+      const response = await fetch('users.json');
+      const users = await response.json();
 
-        users.forEach(user => {
+      const user = users.find(u => u.username === username);
+
+      if (user && user.admin) {
+        // Mostra la sezione admin
+        document.getElementById('adminSection').style.display = 'block';
+        const userList = document.getElementById('userList');
+        users.forEach(u => {
           const li = document.createElement('li');
-          li.classList.add('user-item');
-          li.textContent = `Username: ${user.username}, Admin: ${user.admin ? "✔" : "❌"}`;
-          usersList.appendChild(li);
+          li.textContent = `${u.username} - ${u.admin ? 'Admin' : 'Utente'}`;
+          userList.appendChild(li);
         });
+      } else {
+        // Mostra il messaggio di permessi insufficienti
+        document.getElementById('noPermissionsMessage').style.display = 'block';
       }
     }
 
-    // Funzione per creare un nuovo utente
-    document.getElementById('createUserButton').addEventListener('click', function() {
-      const username = document.getElementById('newUsername').value;
-      const password = document.getElementById('newPassword').value;
-
-      if (username && password) {
-        const users = getUsers();
-        const newUser = { username: username, password: password, admin: false }; // I nuovi utenti non sono admin
-        users.push(newUser);
-        saveUsers(users);
-        loadUsers();  // Ricarica la lista utenti
-      } else {
-        alert('Compila tutti i campi!');
-      }
-    });
-
-    // Funzione di logout
+    // Gestione del logout
     document.getElementById('logoutButton').addEventListener('click', function() {
-      document.cookie = 'username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-      alert('Logout effettuato!');
-      window.location.href = 'login.html';
+      deleteCookie('username');
+      window.location.href = "login.html";
     });
 
-    // Carica gli utenti all'avvio
-    loadUsers();
+    // Inizializza la dashboard
+    initDashboard();
   </script>
 </body>
 </html>
