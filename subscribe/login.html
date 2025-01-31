@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>Login</title>
   <style>
     * {
         margin: 0;
@@ -13,73 +13,124 @@
 
     body {
         font-family: Arial, sans-serif;
-        background-color: #141414;
         color: #fff;
         text-align: center;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background-image: url('background.jpg'); /* Aggiungi il percorso della tua immagine di sfondo */
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
     }
 
     header {
         background-color: #000;
-        padding: 20px;
+        width: 100%;
+        padding: 20px 0;
     }
 
     header h1 {
-        font-size: 28px;
+        font-size: 32px;
         color: #e50914;
     }
 
     .container {
-        max-width: 800px;
-        margin: 20px auto;
+        max-width: 500px;
+        background-color: #222;
         padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+        width: 100%;
     }
 
-    .user-item {
-        margin-bottom: 10px;
+    .container input {
+        width: 100%;
         padding: 10px;
-        background-color: #333;
+        margin: 10px 0;
+        border: none;
         border-radius: 5px;
+        background-color: #333;
+        color: #fff;
+        font-size: 16px;
+    }
+
+    .container input:focus {
+        border: 2px solid #e50914;
+        outline: none;
     }
 
     button {
         background-color: #e50914;
         color: #fff;
         border: none;
-        padding: 10px 20px;
+        padding: 12px 20px;
         font-size: 16px;
         border-radius: 5px;
         cursor: pointer;
-        transition: transform 0.2s;
+        width: 100%;
+        transition: transform 0.2s ease;
     }
 
     button:hover {
-        transform: scale(1.1);
+        transform: scale(1.05);
     }
 
-    #userList {
-        margin-top: 20px;
+    footer {
+        background-color: #000;
+        padding: 20px;
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        text-align: center;
     }
 
-    .delete-btn {
-        background-color: #ff4c4c;
-        margin-left: 10px;
+    footer p {
+        font-size: 14px;
+        color: #e50914;
     }
 
+    a {
+        color: #e50914;
+        text-decoration: none;
+    }
+
+    .error {
+        color: #e50914;
+        font-size: 14px;
+        margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <h1>Dashboard</h1>
-  <p>Benvenuto nella tua area riservata!</p>
-  <button id="logoutButton">Logout</button>
-
-  <div class="container">
-    <div id="userList" style="display: none;">
-      <h2>Lista Utenti</h2>
-      <ul id="users"></ul>
+  <center>
+    <div class="container">
+      <h1>Login</h1>
+      <form id="loginForm">
+        <label for="username">Username:</label>
+        <input type="text" id="username" required>
+        <br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" required>
+        <br>
+        <button type="submit">Login</button>
+        <p>Non hai un account?</p>
+      </form>
+      <a href="https://boccagigantetv.github.io/pricing"><button>Registrati</button></a>
+      <p id="errorMessage" class="error" style="display:none;">Credenziali errate, riprova!</p>
     </div>
-  </div>
+  </center>
 
   <script>
+    // Funzione per impostare i cookie
+    function setCookie(name, value, days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
+    }
+
     // Funzione per ottenere un cookie
     function getCookie(name) {
       const cookies = document.cookie.split('; ');
@@ -90,71 +141,35 @@
       return null;
     }
 
-    // Funzione per gestire il login e i cookie
-    function checkLogin(users) {
-      const username = getCookie('username');
-      const password = getCookie('password');
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
 
-      if (!username || !password) {
-        // Se non ci sono cookie, reindirizza al login
-        alert('Devi effettuare il login prima di accedere a questa pagina.');
-        window.location.href = "login.html";
-      } else {
-        // Se ci sono i cookie, verifica le credenziali
-        const user = users.find(u => u.username === username && u.password === password);
+      try {
+        // Carica gli utenti da users.json
+        const response = await fetch('users.json');
+        const users = await response.json();
 
-        if (!user) {
-          alert('Credenziali errate.');
-          document.cookie = 'username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';  // Elimina i cookie
-          document.cookie = 'password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-          window.location.href = "login.html";  // Reindirizza al login
+        // Verifica le credenziali
+        const user = users.find(user => user.username === username && user.password === password);
+
+        if (user) {
+          // Imposta i cookie per mantenere il login
+          setCookie('username', username, 7);  // Cookie valido per 7 giorni
+          setCookie('password', password, 7);  // Cookie valido per 7 giorni
+
+          // Reindirizza alla dashboard
+          alert('Login riuscito!');
+          window.location.href = "dashboard.html"; // Modifica con il percorso della tua dashboard
         } else {
-          alert(`Bentornato, ${username}!`);
-          if (user.admin) {
-            // Se l'utente è admin, mostra la lista degli utenti
-            document.getElementById('userList').style.display = 'block';
-            const userList = document.getElementById('users');
-
-            // Mostra la lista degli utenti
-            users.forEach(u => {
-              const li = document.createElement('li');
-              li.classList.add('user-item');
-              li.innerHTML = `
-                Username: ${u.username}, Admin: ${u.admin ? "✔" : "❌"}
-                <button class="delete-btn" data-username="${u.username}">Elimina</button>
-              `;
-              userList.appendChild(li);
-            });
-
-            // Gestione eliminazione utente
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-              btn.addEventListener('click', (event) => {
-                const usernameToDelete = event.target.dataset.username;
-                alert(`Utente ${usernameToDelete} eliminato!`);
-              });
-            });
-          } else {
-            alert('Non hai i privilegi di amministratore per modificare gli utenti.');
-            window.location.href = "login.html";  // Reindirizza alla pagina di login
-          }
+          // Mostra errore se le credenziali sono errate
+          document.getElementById('errorMessage').style.display = 'block';
         }
+      } catch (error) {
+        console.error('Errore durante il caricamento degli utenti:', error);
+        alert('Errore del server. Riprova più tardi.');
       }
-    }
-
-    // Carica gli utenti dal file JSON
-    fetch('users.json')
-      .then(response => response.json())
-      .then(users => {
-        checkLogin(users);
-      })
-      .catch(error => console.error('Errore nel caricamento della lista utenti:', error));
-
-    // Gestione del logout
-    document.getElementById('logoutButton').addEventListener('click', function() {
-      document.cookie = 'username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';  // Elimina i cookie
-      document.cookie = 'password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-      alert('Logout effettuato!');
-      window.location.href = "login.html";  // Reindirizza alla pagina di login
     });
   </script>
 
