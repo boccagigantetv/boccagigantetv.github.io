@@ -198,23 +198,19 @@
       localStorage.setItem('users', JSON.stringify(users));
     }
 
-    fetch('users.json')
-      .then(response => response.json())
-      .then(usersData => {
-        const loggedUser = users.find(user => user.username === username && user.password === password);
+    // Verifica se l'utente loggato è admin
+    const loggedUser = users.find(user => user.username === username && user.password === password);
 
-        if (loggedUser) {
-          // Se l'utente è un admin, mostra la lista degli utenti
-          if (loggedUser.admin) {
-            document.getElementById('userList').style.display = 'block'; // Mostra la lista utenti per gli admin
-          } else {
-            document.getElementById('noAdminMessage').style.display = 'block'; // Messaggio per gli utenti normali
-          }
+    if (loggedUser) {
+      // Se l'utente è un admin, mostra la lista degli utenti
+      if (loggedUser.admin) {
+        document.getElementById('userList').style.display = 'block'; // Mostra la lista utenti per gli admin
+      } else {
+        document.getElementById('noAdminMessage').style.display = 'block'; // Messaggio per gli utenti normali
+      }
 
-          loadUsers(users); // Carica la lista utenti (solo se admin)
-        }
-      })
-      .catch(error => console.error('Errore nel caricamento della lista utenti:', error));
+      loadUsers(users); // Carica la lista utenti (solo se admin)
+    }
 
     // Gestione del logout
     document.getElementById('logoutButton').addEventListener('click', function() {
