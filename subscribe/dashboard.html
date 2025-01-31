@@ -133,8 +133,29 @@
               li.classList.add('user-item');
               li.innerHTML = `
                 Username: ${u.username}, Admin: ${u.admin ? "✔" : "❌"}
+                <button class="delete-btn" data-username="${u.username}">Elimina</button>
               `;
               userList.appendChild(li);
+            });
+
+            // Gestione eliminazione utente
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+              btn.addEventListener('click', (event) => {
+                const usernameToDelete = event.target.dataset.username;
+                // Logica per eliminare l'utente (modifica il tuo file `users.json` sul server)
+                alert(`Utente ${usernameToDelete} eliminato!`);
+              });
+            });
+
+            // Aggiunta di un nuovo utente
+            document.getElementById('addUserButton').addEventListener('click', () => {
+              const newUsername = document.getElementById('newUsername').value;
+              if (newUsername) {
+                // Logica per aggiungere un nuovo utente (modifica il tuo file `users.json` sul server)
+                alert(`Utente ${newUsername} aggiunto!`);
+              } else {
+                alert('Inserisci un nome utente valido.');
+              }
             });
           } else {
             alert('Non hai i privilegi di amministratore per modificare gli utenti.');
