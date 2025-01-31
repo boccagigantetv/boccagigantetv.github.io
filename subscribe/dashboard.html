@@ -6,63 +6,69 @@
   <title>Dashboard</title>
   <style>
     * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-        font-family: Arial, sans-serif;
-        background-color: #141414;
-        color: #fff;
-        text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #141414;
+      color: #fff;
+      text-align: center;
     }
 
     header {
-        background-color: #000;
-        padding: 20px;
+      background-color: #000;
+      padding: 20px;
     }
 
     header h1 {
-        font-size: 28px;
-        color: #e50914;
+      font-size: 28px;
+      color: #e50914;
     }
 
     .container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
     }
 
     .user-item {
-        margin-bottom: 10px;
-        padding: 10px;
-        background-color: #333;
-        border-radius: 5px;
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #333;
+      border-radius: 5px;
     }
 
     button {
-        background-color: #e50914;
-        color: #fff;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: transform 0.2s;
+      background-color: #e50914;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: transform 0.2s;
     }
 
     button:hover {
-        transform: scale(1.1);
+      transform: scale(1.1);
     }
 
     #userList {
-        margin-top: 20px;
+      margin-top: 20px;
     }
 
     .delete-btn {
-        background-color: #ff4c4c;
-        margin-left: 10px;
+      background-color: #ff4c4c;
+      margin-left: 10px;
+    }
+
+    .create-form input {
+      margin: 10px;
+      padding: 10px;
+      font-size: 16px;
     }
 
   </style>
@@ -77,6 +83,19 @@
       <h2>Lista Utenti</h2>
       <ul id="users"></ul>
     </div>
+
+    <div id="noAdminMessage" style="display: none;">
+      <p>Sei un utente normale, non hai permessi per gestire gli utenti.</p>
+    </div>
+
+    <div class="create-form" style="margin-top: 20px;">
+      <h2>Aggiungi Nuovo Utente (Admin)</h2>
+      <form id="createUserForm">
+        <input type="text" id="newUsername" placeholder="Username" required />
+        <input type="password" id="newPassword" placeholder="Password" required />
+        <button type="submit">Aggiungi Utente</button>
+      </form>
+    </div>
   </div>
 
   <script>
@@ -90,71 +109,129 @@
       return null;
     }
 
-    // Funzione per gestire il login e i cookie
-    function checkLogin(users) {
-      const username = getCookie('username');
-      const password = getCookie('password');
+    // Funzione per impostare un cookie
+    function setCookie(name, value, days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${value}; expires=${date.toUTCString()}; path=/`;
+    }
 
-      if (!username || !password) {
-        // Se non ci sono cookie, reindirizza al login
-        alert('Devi effettuare il login prima di accedere a questa pagina.');
-        window.location.href = "login.html";
-      } else {
-        // Se ci sono i cookie, verifica le credenziali
-        const user = users.find(u => u.username === username && u.password === password);
+    // Funzione per eliminare un cookie
+    function deleteCookie(name) {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+    }
 
-        if (!user) {
-          alert('Credenziali errate.');
-          document.cookie = 'username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';  // Elimina i cookie
-          document.cookie = 'password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
-          window.location.href = "login.html";  // Reindirizza al login
-        } else {
-          alert(`Bentornato, ${username}!`);
-          if (user.admin) {
-            // Se l'utente è admin, mostra la lista degli utenti
-            document.getElementById('userList').style.display = 'block';
-            const userList = document.getElementById('users');
+    // Funzione per caricare gli utenti
+    function loadUsers(users) {
+      const userList = document.getElementById('users');
+      userList.innerHTML = ''; // Pulisce la lista esistente
 
-            // Mostra la lista degli utenti
-            users.forEach(u => {
-              const li = document.createElement('li');
-              li.classList.add('user-item');
-              li.innerHTML = `
-                Username: ${u.username}, Admin: ${u.admin ? "✔" : "❌"}
-                <button class="delete-btn" data-username="${u.username}">Elimina</button>
-              `;
-              userList.appendChild(li);
-            });
+      users.forEach(u => {
+        const li = document.createElement('li');
+        li.classList.add('user-item');
+        li.innerHTML = `
+          Username: ${u.username}, Admin: ${u.admin ? "✔" : "❌"}
+          <button class="delete-btn" data-username="${u.username}">Elimina</button>
+        `;
+        userList.appendChild(li);
+      });
 
-            // Gestione eliminazione utente
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-              btn.addEventListener('click', (event) => {
-                const usernameToDelete = event.target.dataset.username;
-                alert(`Utente ${usernameToDelete} eliminato!`);
-              });
-            });
-          } else {
-            alert('Non hai i privilegi di amministratore per modificare gli utenti.');
-            window.location.href = "login.html";  // Reindirizza alla pagina di login
-          }
-        }
-      }
+      // Aggiungi il listener per eliminare un utente
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', function(event) {
+          const usernameToDelete = event.target.dataset.username;
+          deleteUser(usernameToDelete, users);
+        });
+      });
+    }
+
+    // Funzione per eliminare un utente
+    function deleteUser(username, users) {
+      const updatedUsers = users.filter(u => u.username !== username);
+      alert(`Utente ${username} eliminato!`);
+      updateUserList(updatedUsers);
+    }
+
+    // Funzione per aggiungere un nuovo utente
+    function addUser(newUsername, newPassword, users) {
+      const newUser = {
+        username: newUsername,
+        password: newPassword,
+        admin: false // Imposta come normale utente per default
+      };
+      users.push(newUser);
+      alert(`Utente ${newUsername} aggiunto!`);
+      updateUserList(users);
+    }
+
+    // Funzione per aggiornare la lista degli utenti
+    function updateUserList(updatedUsers) {
+      fetch('updateUsers.php', { // Simula una chiamata al server per aggiornare il file JSON
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedUsers)
+      })
+      .then(response => response.json())
+      .then(() => {
+        loadUsers(updatedUsers);
+      })
+      .catch(error => console.error('Errore nell\'aggiornamento della lista utenti:', error));
+    }
+
+    // Controlla se l'utente è loggato
+    const username = getCookie('username');
+    const password = getCookie('password');
+    
+    if (!username || !password) {
+      alert('Devi effettuare il login prima di accedere a questa pagina.');
+      window.location.href = "login.html"; // Reindirizza alla pagina di login
     }
 
     // Carica gli utenti dal file JSON
     fetch('users.json')
       .then(response => response.json())
       .then(users => {
-        checkLogin(users);
+        const loggedUser = users.find(user => user.username === username && user.password === password);
+
+        if (loggedUser) {
+          if (loggedUser.admin) {
+            document.getElementById('userList').style.display = 'block'; // Mostra la lista utenti per gli admin
+          } else {
+            document.getElementById('noAdminMessage').style.display = 'block'; // Messaggio per gli utenti normali
+          }
+
+          loadUsers(users);
+        }
       })
       .catch(error => console.error('Errore nel caricamento della lista utenti:', error));
 
     // Gestione del logout
     document.getElementById('logoutButton').addEventListener('click', function() {
-      document.cookie = 'username=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';  // Elimina i cookie
-      document.cookie = 'password=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/';
+      deleteCookie('username');
+      deleteCookie('password');
       alert('Logout effettuato!');
-      window.location.href = "login.html";  // Reindirizza alla pagina di login
+      window.location.href = "login.html"; // Reindirizza alla pagina di login
+    });
+
+    // Gestione della creazione di un nuovo utente (solo per admin)
+    document.getElementById('createUserForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const newUsername = document.getElementById('newUsername').value;
+      const newPassword = document.getElementById('newPassword').value;
+
+      fetch('users.json')
+        .then(response => response.json())
+        .then(users => {
+          const loggedUser = users.find(user => user.username === username && user.password === password);
+          
+          if (loggedUser && loggedUser.admin) {
+            addUser(newUsername, newPassword, users);
+          } else {
+            alert("Solo gli admin possono aggiungere utenti.");
+          }
+        })
+        .catch(error => console.error('Errore nel caricamento degli utenti:', error));
     });
   </script>
 
