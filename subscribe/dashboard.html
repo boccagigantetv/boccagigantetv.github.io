@@ -95,32 +95,38 @@
       return null;
     }
 
+    // Funzione per impostare un cookie
+    function setCookie(name, value, days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000)); // Imposta scadenza
+      document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
+    }
+
     // Funzione per eliminare un cookie
     function deleteCookie(name) {
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
     }
 
-    // Carica gli utenti dal file JSON
-    fetch('users.json')
-      .then(response => response.json())
-      .then(users => {
-        const username = getCookie('username');
-        const password = getCookie('password'); // Aggiungi una password ai cookie
+    // Funzione per gestire il login e i cookie
+    function checkLogin(users) {
+      const username = getCookie('username');
+      const password = getCookie('password');
 
-        if (!username || !password) {
-          alert('Devi effettuare il login prima di accedere a questa pagina.');
-          window.location.href = "login.html"; // Reindirizza alla pagina di login
-        }
-
-        // Trova l'utente che sta cercando di loggarsi
+      if (!username || !password) {
+        // Se non c'è il cookie per l'username o la password, reindirizza al login
+        alert('Devi effettuare il login prima di accedere a questa pagina.');
+        window.location.href = "login.html";
+      } else {
+        // Se ci sono i cookie, verifica le credenziali
         const user = users.find(u => u.username === username && u.password === password);
 
         if (!user) {
           alert('Username o password errati.');
-          window.location.href = "login.html"; // Reindirizza alla pagina di login
+          deleteCookie('username');
+          deleteCookie('password');
+          window.location.href = "login.html"; // Reindirizza al login
         } else {
           alert(`Bentornato, ${username}!`);
-
           if (user.admin) {
             // Se l'utente è un admin, mostra la lista degli utenti
             document.getElementById('userList').style.display = 'block';
@@ -161,6 +167,14 @@
             window.location.href = "login.html"; // Reindirizza alla pagina di login o alla home
           }
         }
+      }
+    }
+
+    // Carica gli utenti dal file JSON
+    fetch('users.json')
+      .then(response => response.json())
+      .then(users => {
+        checkLogin(users);
       })
       .catch(error => console.error('Errore nel caricamento della lista utenti:', error));
 
