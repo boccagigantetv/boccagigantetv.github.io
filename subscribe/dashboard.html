@@ -31,7 +31,6 @@
       <h3>Lista Utenti</h3>
       <ul id="usersList" class="user-list"></ul>
     </div>
-    <p id="noPermissionMessage" style="color: red; display: none;">Non hai i permessi per gestire gli utenti.</p>
   </div>
 
   <script>
@@ -54,12 +53,10 @@
       const currentUser = users.find(u => u.username === username);
 
       const adminSection = document.getElementById('adminSection');
-      const noPermissionMessage = document.getElementById('noPermissionMessage');
 
       if (currentUser && currentUser.admin) {
         // Se l'utente è admin, mostra la sezione di gestione utenti
         adminSection.style.display = 'block';
-        noPermissionMessage.style.display = 'none';
 
         // Visualizza la lista utenti
         users.forEach(user => {
@@ -73,9 +70,8 @@
           usersList.appendChild(li);
         });
       } else {
-        // Se non è admin, non mostra la gestione utenti e mostra il messaggio di errore
+        // Se non è admin, nascondi la gestione utenti
         adminSection.style.display = 'none';
-        noPermissionMessage.style.display = 'block';
       }
     }
 
