@@ -4,80 +4,91 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
-      <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #141414;
+      color: white;
+      text-align: center;
+    }
 
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #141414;
-            color: #fff;
-            text-align: center;
-        }
+    header {
+      background-color: #000;
+      padding: 20px;
+    }
 
-        header {
-            background-color: #000;
-            padding: 20px;
-        }
+    header h1 {
+      font-size: 28px;
+      color: #e50914;
+    }
 
-        header h1 {
-            font-size: 28px;
-            color: #e50914;
-        }
+    .container {
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 800px;
+      background-color: rgba(0, 0, 0, 0.8);
+      border-radius: 10px;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-        }
+    button {
+      background-color: #e50914;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+    }
 
-        .youtube-player {
-            width: 100%;
-            max-width: 800px;
-            height: 450px;
-            border: 3px solid #e50914;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
+    button:hover {
+      transform: scale(1.1);
+    }
 
-        .description {
-            margin: 20px 0;
-            font-size: 16px;
-        }
+    #userList {
+      margin-top: 20px;
+      list-style-type: none;
+    }
 
-        button {
-            background-color: #e50914;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
+    #userList li {
+      margin-bottom: 10px;
+    }
 
-        button:hover {
-            transform: scale(1.1);
-        }
+    .form-container {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+    }
 
-        footer {
-            background-color: #000;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        footer p {
-            font-size: 14px;
-        }
-            </style>
+    input {
+      padding: 10px;
+      margin: 5px;
+      width: 200px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Dashboard</h1>
-  <p>Benvenuto nella tua area riservata!</p>
-  <button id="logoutButton">Logout</button>
+  <header>
+    <h1>Benvenuto nella tua Dashboard</h1>
+    <button id="logoutButton">Logout</button>
+  </header>
+
+  <div class="adminSection">
+    <div id="adminSection" style="display:none;">
+      <h2>Gestione Utenti</h2>
+      <ul id="userList"></ul>
+
+      <div class="form-container">
+        <h3>Aggiungi un nuovo utente</h3>
+        <input type="text" id="newUsername" placeholder="Username">
+        <input type="password" id="newPassword" placeholder="Password">
+        <button id="addUserButton">Aggiungi Utente</button>
+      </div>
+    </div>
+
+    <div id="noPermissionsMessage" style="display:none;">
+      <h2>Non hai i permessi per gestire gli utenti.</h2>
+    </div>
+  </div>
 
   <script>
     // Funzione per ottenere un cookie
@@ -92,46 +103,121 @@
 
     // Funzione per eliminare un cookie
     function deleteCookie(name) {
-      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
     }
 
-    // Controlla se l'utente è loggato
-    const username = getCookie('username');
-    if (!username) {
-      alert('Devi effettuare il login prima di accedere a questa pagina.');
-      window.location.href = "login.html"; // Reindirizza alla pagina di login
-    } else {
-      alert(`Bentornato, ${username}!`);
+    // Funzione per caricare gli utenti
+    async function loadUsers() {
+      try {
+        const response = await fetch('users.json');
+        const users = await response.json();
+        return users;
+      } catch (error) {
+        console.error("Errore nel caricamento degli utenti:", error);
+        return [];
+      }
     }
 
-         // Carica la lista utenti da users.json
-         fetch('users.json')
-        .then(response => response.json())
-        .then(users => {
-          // Trova l'utente loggato
-          const user = users.find(u => u.username === username);
-          if (user && user.admin) {
-            document.getElementById('userList').style.display = 'block';
-            const userList = document.getElementById('users');
+    // Funzione per salvare gli utenti
+    async function saveUsers(users) {
+      try {
+        await fetch('save_users.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(users)
+        });
+      } catch (error) {
+        console.error("Errore nel salvataggio degli utenti:", error);
+      }
+    }
 
-            // Mostra la lista utenti
-            users.forEach(u => {
-              const li = document.createElement('li');
-              li.textContent = `Username: ${u.username}, Admin: ${u.admin ? "✔" : "❌"}`;
-              userList.appendChild(li);
-            });
-          }
-        })
-        .catch(error => console.error('Errore nel caricamento della lista utenti:', error));
+    // Inizializza la dashboard
+    async function initDashboard() {
+      const username = getCookie('username');
 
+      if (!username) {
+        alert('Devi effettuare il login prima di accedere a questa pagina.');
+        window.location.href = "login.html";
+        return;
+      }
 
-    // Gestione del logout
+      const users = await loadUsers();
+      const user = users.find(u => u.username === username);
+
+      if (user && user.admin) {
+        document.getElementById('adminSection').style.display = 'block';
+
+        // Mostra la lista degli utenti
+        const userList = document.getElementById('userList');
+        users.forEach(u => {
+          const li = document.createElement('li');
+          li.textContent = `${u.username} - ${u.admin ? 'Admin' : 'Utente'}`;
+          
+          // Bottone per eliminare
+          const deleteButton = document.createElement('button');
+          deleteButton.textContent = 'Elimina';
+          deleteButton.onclick = () => deleteUser(u.username);
+          li.appendChild(deleteButton);
+          userList.appendChild(li);
+        });
+      } else {
+        document.getElementById('noPermissionsMessage').style.display = 'block';
+      }
+    }
+
+    // Funzione per aggiungere un nuovo utente
+    async function addUser() {
+      const username = document.getElementById('newUsername').value;
+      const password = document.getElementById('newPassword').value;
+
+      if (!username || !password) {
+        alert('Per favore, inserisci sia il nome utente che la password.');
+        return;
+      }
+
+      const users = await loadUsers();
+
+      // Verifica se l'utente esiste già
+      const userExists = users.some(u => u.username === username);
+      if (userExists) {
+        alert('Questo nome utente esiste già.');
+        return;
+      }
+
+      const newUser = {
+        username: username,
+        password: password,
+        admin: false // Imposta l'admin come false per default
+      };
+
+      users.push(newUser);
+      await saveUsers(users);
+      alert('Utente aggiunto con successo.');
+      window.location.reload(); // Ricarica la pagina per aggiornare la lista degli utenti
+    }
+
+    // Funzione per eliminare un utente
+    async function deleteUser(username) {
+      const users = await loadUsers();
+      const updatedUsers = users.filter(u => u.username !== username);
+      await saveUsers(updatedUsers);
+      alert('Utente eliminato.');
+      window.location.reload(); // Ricarica la pagina per aggiornare la lista degli utenti
+    }
+
+    // Logout
     document.getElementById('logoutButton').addEventListener('click', function() {
       deleteCookie('username');
-      alert('Logout effettuato!');
-      window.location.href = "login.html"; // Reindirizza alla pagina di login
+      window.location.href = "login.html";
     });
+
+    // Aggiungi utente
+    document.getElementById('addUserButton').addEventListener('click', addUser);
+
+    // Inizializza la dashboard
+    initDashboard();
   </script>
-  <a href="https://boccagigantetv.github.io/"><button>HOME</button></a>
 </body>
 </html>
