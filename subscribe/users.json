@@ -50,6 +50,13 @@
     "admin": true
   },
   {
+    "username": "bitch",
+    "password": "password",
+    "admin": true
+    
+  },
+  
+  {
     "username": "famigliaticcio",
     "password": "ticcio77",
     "admin": false
